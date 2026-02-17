@@ -16,6 +16,7 @@ Personal configuration files managed with [GNU Stow](https://www.gnu.org/softwar
 ├── niri/               → ~/.config/niri/
 ├── nvim/               → ~/.config/nvim/
 ├── rstudio/            → ~/.config/rstudio/
+├── walker/             → ~/.config/walker/
 ├── waybar/             → ~/.config/waybar/
 ├── zed/                → ~/.config/zed/
 └── zsh/
@@ -112,6 +113,7 @@ GNU Stow creates symlinks from target locations back to this repository:
 | **niri** | Niri window manager |
 | **nvim** | Neovim configuration |
 | **rstudio** | RStudio IDE settings, snippets, theme |
+| **walker** | Launcher configuration and themes |
 | **waybar** | Wayland status bar |
 | **zed** | Zed editor |
 | **zsh** | Shell config with oh-my-zsh |
