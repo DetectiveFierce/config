@@ -10,6 +10,7 @@ Personal configuration files managed with [GNU Stow](https://www.gnu.org/softwar
 ├── Antigravity/        → ~/.config/Antigravity/
 ├── Cursor/             → ~/.config/Cursor/
 ├── foot/               → ~/.config/foot/
+├── fuzzel/             → ~/.config/fuzzel/
 ├── ghostty/            → ~/.config/ghostty/
 ├── hypr/               → ~/.config/hypr/
 ├── hypr-dock/          → ~/.config/hypr-dock/
@@ -108,6 +109,7 @@ GNU Stow creates symlinks from target locations back to this repository:
 | **Antigravity** | VS Code fork - settings, keybindings |
 | **Cursor** | AI editor - settings, keybindings, theme |
 | **foot** | Wayland terminal |
+| **fuzzel** | Application launcher |
 | **ghostty** | GPU terminal |
 | **hypr** | Hyprland window manager |
 | **hypr-dock** | hypr-alttab switcher configuration |
