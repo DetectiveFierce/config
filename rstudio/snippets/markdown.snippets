@@ -1,0 +1,115 @@
+snippet eq
+	\$\$
+	\begin{aligned}
+
+	\end{aligned}
+	\$\$
+	
+snippet split
+	\$\$
+	\begin{split}
+		\begin{aligned}
+		
+		\end{aligned}
+	\end{split}
+	\quad \quad
+	\begin{split}
+		\begin{aligned}
+		
+		\end{aligned}
+	\end{split}
+	\$\$
+	
+snippet header
+	---
+	title: ""
+	author: ""
+	date: ""
+	output: 
+		pdf_document:
+			includes:
+				in_header: "/home/shared-psychosis/Landing Zone/header.tex"
+	header-includes:
+		-  - \renewcommand{\mytitle}{TITLE title Title TiTlE tItLe TItLE tiTlE}
+	---
+
+	\thispagestyle{firstpage}
+	\UNsection{\mytitle}{1.5}
+
+	```{r setup, include=FALSE}
+	knitr::opts_chunk\$set(echo = TRUE, dev="cairo_pdf")
+	setwd("/home/shared-psychosis/Landing Zone/")
+	```
+
+	Imports
+	```{r message=FALSE, warning=FALSE}
+	library(ggplot2)
+	library(dplyr)
+	library(gridExtra)
+	library(snazzieR)
+	```
+
+snippet homework
+	---
+	title: ""
+	author: ""
+	date: ""
+	output: 
+		pdf_document:
+			includes:
+				in_header: "/home/shared-psychosis/Landing Zone/header.tex"
+	header-includes:
+		-  - \renewcommand{\mytitle}{TITLE title Title TiTlE tItLe TItLE tiTlE}
+	---
+
+	\thispagestyle{firstpage}
+	\UNsection{\mytitle}{1.5}
+
+	```{r setup, include=FALSE}
+	knitr::opts_chunk\$set(echo = TRUE, dev="cairo_pdf")
+	setwd("/home/shared-psychosis/Landing Zone/")
+	```
+
+	Imports
+	```{r message=FALSE, warning=FALSE}
+	library(ggplot2)
+	library(dplyr)
+	library(gridExtra)
+	library(snazzieR)
+	```
+
+	\UNsection{Question 1}
+	Question1IntroText
+
+	\UNsubsection{a.} Question1aText
+
+	\newpage
+
+	\UNsection{Question 2} 
+	Question1IntroText
+
+	\UNsubsection{a. } Question2aTexts
+
+snippet t
+	\$\\theta\$
+
+snippet [
+	[${1:label}](${2:location})
+
+snippet ![
+	![${1:label}](${2:location})
+
+snippet r
+	```{r ${1:label}, ${2:options}}
+	${0}
+	```
+
+snippet rcpp
+	```{r, engine='Rcpp'}
+	#include <Rcpp.h>
+	using namespace Rcpp;
+	
+	${0}
+	
+	```
+

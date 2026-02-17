@@ -1,0 +1,72 @@
+{
+  "editor.fontSize": 18,
+  "editor.fontFamily": "'Courier Prime', 'monospace', monospace",
+  "window.zoomLevel": 1.5,
+  "cursor.composer.textSizeScale": 1.3,
+  "diffEditor.maxComputationTime": 0,
+  "editor.formatOnSave": true,
+  "makefile.configureOnOpen": true,
+  "[r]": {
+    "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",<>/"
+  },
+  "workbench.activityBar.orientation": "vertical",
+  "workbench.editor.tabSizing": "shrink",
+  "workbench.editor.showTabs": "none",
+  "monkeyPatch.folderMap": {
+    "cursor-monkey": "/home/shared-psychosis/.cursor-monkey"
+  },
+  "monkeyPatch.browserModules": [
+    "cursor-monkey/browser1"
+  ],
+  "workbench.colorCustomizations": {
+    // Remove or set these to transparent to remove solid lines
+    // "editorError.border": "#00000000",
+    // "editorWarning.border": "#00000000"
+    // You can customize the foreground color of the squiggly lines here
+    "editorError.foreground": "#ff0000", // Red for errors
+    "editorWarning.foreground": "#ffa500" // Orange for warnings
+  },
+  "window.commandCenter": true,
+  "cursor.cpp.disabledLanguages": ["plaintext"],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "eslint.format.enable": true,
+  "explorer.confirmDragAndDrop": false,
+  "amp.url": "https://ampcode.com/",
+  "amp.mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest", "--headless", "--isolated"]
+    }
+  },
+  "triggerTaskOnSave.tasks": {
+    "Knit": ["**/*.Rmd", "**/*.RMD", "**/*.rmd"]
+  },
+  "grunt.autoDetect": "on",
+  "editor.quickSuggestionsDelay": 500,
+  "cursor.preferNotificationsSameAsChat": true,
+  "json.schemaDownload.enable": true,
+  "workbench.colorTheme": "Hate of Nature",
+  "workbench.auxiliaryActivityBar.location": "top",
+  "kilo-code.allowedCommands": [
+    "git log",
+    "git diff",
+    "git show",
+    "ninja",
+    "mkdir",
+    "cp",
+    "mv",
+    "head",
+    "ls",
+    "cd",
+    "meson",
+    "./pdf-manager",
+    "echo",
+    "gdb",
+    "pkill",
+    "true",
+    "G_MESSAGES_DEBUG=all",
+    "R_LIBS_USER=/home/shared-psychosis/R/x86_64-pc-linux-gnu-library/4.5 Rscript",
+    "Rscript -e \"source('knit.R'); knit('Rmd Files/template.Rmd')\""
+  ],
+  "kilo-code.deniedCommands": []
+}

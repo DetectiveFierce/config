@@ -1,0 +1,49 @@
+{
+    "initial_working_directory": "~",
+    "font_size_points": 16,
+    "pdf_previewer": "none",
+    "posix_terminal_shell": "zsh",
+    "editor_theme": "Hate-Of-Nature:",
+    "panes": {
+        "quadrants": [
+            "Source",
+            "Console",
+            "TabSet2",
+            "TabSet1"
+        ],
+        "tabSet1": [
+            "Files",
+            "Connections",
+            "Build",
+            "Viewer",
+            "Presentation"
+        ],
+        "tabSet2": [
+            "Environment",
+            "Plots",
+            "Packages",
+            "Help",
+            "Presentations"
+        ],
+        "hiddenTabSet": [
+            "History",
+            "VCS",
+            "Tutorial"
+        ],
+        "console_left_on_top": false,
+        "console_right_on_top": true,
+        "additional_source_columns": 0
+    },
+    "editor_scroll_multiplier": 170,
+    "global_theme": "alternate",
+    "jobs_tab_visibility": "shown",
+    "document_author": "Aidan J. Wagner",
+    "visual_markdown_editing_max_content_width": 808,
+    "rainbow_parentheses": true,
+    "copilot_enabled": true,
+    "sync_files_pane_working_dir": true,
+    "default_project_location": "~/Landing Zone/Stat 221",
+    "rmd_viewer_type": "none",
+    "copilot_indexing_enabled": true,
+    "copilot_completions_delay": 50
+}

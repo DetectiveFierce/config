@@ -1,0 +1,217 @@
+* {
+    border: none;
+    border-radius: 0;
+    font-family:
+        "Iosevka Nerd Font", Iosevka, "Font Awesome 6 Free", sans-serif;
+    min-height: 10px;
+}
+
+window#waybar {
+    background: rgba(49, 7, 86, 0.8);
+}
+
+window#waybar.hidden {
+    opacity: 0.2;
+}
+
+/* Shared spacing and shape: match workspaces container */
+#workspaces,
+#custom-weather,
+#pulseaudio,
+#custom-mem,
+#cpu,
+#temperature,
+#backlight,
+#battery,
+#clock {
+    margin: 4px 4px; /* top/bottom 4px, left/right 8px */
+    border-radius: 10px;
+    transition: none;
+    color: #ffffff;
+    font-size: 18px;
+}
+
+/* Shared inner padding for non-button modules */
+#custom-weather,
+#pulseaudio,
+#custom-mem,
+#cpu,
+#temperature,
+#backlight,
+#battery,
+#clock {
+    padding: 4px 14px; /* same feel as workspace buttons */
+}
+
+/* Workspaces container uses same spacing */
+#workspaces {
+    background: #3b5012;
+}
+
+/* Workspace buttons keep their own inner padding and visuals */
+#workspaces button {
+    transition: none;
+    color: #7c818c;
+    background: transparent;
+    padding: 4px;
+    font-size: 16px;
+}
+
+#workspaces button.persistent {
+    color: #7c818c;
+    font-size: 12px;
+}
+
+/* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
+#workspaces button:hover {
+    transition: none;
+    box-shadow: inherit;
+    text-shadow: inherit;
+    border-radius: inherit;
+    color: #383c4a;
+    background: #3b5012;
+}
+
+#workspaces button.focused {
+    color: white;
+}
+
+/* Per-module colors */
+#custom-weather {
+    background: #7e9c42;
+}
+
+#pulseaudio {
+    background: #556d24;
+}
+
+#pulseaudio.muted {
+    background-color: #7c8b5e;
+    color: #2a5c45;
+}
+
+/* Joined CPU + MEM: same spacing as others, visually connected */
+#cpu {
+    background: #5d762a;
+    border-radius: 10px 0 0 10px; /* left half */
+    margin-right: 0; /* join with mem */
+}
+
+#custom-mem {
+    background: #5d762a;
+    border-radius: 0 10px 10px 0; /* right half */
+    margin-left: 0; /* join with cpu */
+}
+
+/* Temperature */
+#temperature {
+    background: #6e8936;
+}
+
+#temperature.critical {
+    background-color: #b00f37;
+}
+
+/* Backlight */
+#backlight {
+    background: #516821;
+}
+
+/* Battery */
+#battery {
+    background: #4c631e;
+}
+
+#battery.charging {
+    background-color: #88b72a;
+}
+
+#battery.warning:not(.charging) {
+    background-color: #b09a0f;
+    color: black;
+}
+
+#battery.critical:not(.charging) {
+    background-color: #b00f37;
+    color: #ffffff;
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+/* Clock */
+#clock {
+    background: #3b5012;
+}
+
+@keyframes blink {
+    to {
+        background-color: #ffffff;
+        color: #000000;
+    }
+}
+
+/* ===== Hover enhancements (no zoom; warmer, subtler highlight) ===== */
+/* Unified hover palette: slightly yellower and a bit less vivid than before.
+   No padding/margin/transform changes -> zero layout jitter.
+   Smooth but restrained transitions for background/color and subtle shadows. */
+
+#workspaces,
+#workspaces button,
+#custom-weather,
+#pulseaudio,
+#custom-mem,
+#cpu,
+#temperature,
+#backlight,
+#battery,
+#clock {
+    transition:
+        background-color 260ms cubic-bezier(0.22, 1, 0.36, 1),
+        color 260ms cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 260ms cubic-bezier(0.22, 1, 0.36, 1),
+        text-shadow 260ms cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow: none;
+    text-shadow: none;
+}
+
+/* Unified hover background and text color (warmer, less vivid) */
+#workspaces button:hover,
+#custom-weather:hover,
+#pulseaudio:hover,
+#custom-mem:hover,
+#cpu:hover,
+#temperature:hover,
+#backlight:hover,
+#battery:hover,
+#clock:hover {
+    background-color: #a5c73a; /* warmer/yellower than #8ecf3a, slightly desaturated */
+    color: #172304;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.28);
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.22);
+}
+
+/* Special states keep the same unified hover highlight for consistency */
+#pulseaudio.muted:hover,
+#battery.charging:hover,
+#battery.warning:not(.charging):hover,
+#battery.critical:not(.charging):hover,
+#temperature.critical:hover {
+    background-color: #a5c73a;
+    color: #172304;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.28);
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.22);
+}
+
+/* Focused workspace button on hover uses the same unified highlight */
+#workspaces button.focused:hover {
+    background-color: #a5c73a;
+    color: #172304;
+}
+
+/* Optional: group container subtle glow on hover without moving anything */
+#workspaces:hover {
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.22);
+}

@@ -1,0 +1,198 @@
+snippet header
+	---
+	title: ""
+	author: ""
+	date: ""
+	output: 
+		pdf_document:
+			includes:
+				in_header: "/home/shared-psychosis/Landing Zone/header.tex"
+	header-includes:
+		-  - \renewcommand{\mytitle}{TITLE title Title TiTlE tItLe TItLE tiTlE}
+	---
+
+	\thispagestyle{firstpage}
+	\UNsection{\mytitle}
+
+	```{r setup, include=FALSE}
+	knitr::opts_chunk\$set(echo = TRUE, dev="cairo_pdf")
+	setwd("/home/shared-psychosis/Landing Zone/STAT 217")
+	```
+
+	Imports
+	```{r message=FALSE, warning=FALSE}
+	library(ggplot2)
+	library(dplyr)
+	library(gridExtra)
+	```
+
+	```{r include=FALSE}
+	colors <- c(
+		"#83B02F", "#C31E4A", "#008C9E", "#6F646C", "#743496",
+		"#429E67", "#D65F35", "#3A609A", "#92A8D1", "#9C2970",
+		"#B6BD27", "#E99F1F", "#154080", "#B5CE71", "#D57CB3",
+		"#A1902E"
+	)
+
+	doc_theme <- theme_minimal(base_size = 14, base_family = "Times New Roman") +
+		theme(
+			panel.background = element_rect(fill = "cornsilk1", color = NA),
+			panel.grid = element_blank(),
+			panel.border = element_rect(color = "black", fill = NA, linewidth = 0),
+			axis.line = element_line(color = "black", linewidth = 0.5),
+			axis.ticks = element_line(color = "black", linewidth = 0.5),
+			axis.ticks.length = unit(0.25, "cm"),
+			plot.background = element_rect(fill = "white", color = NA),
+			plot.title = element_text(hjust = 0.5, face = "bold", color = "#83B02F", size = 18, family = "Times New Roman"),
+			plot.subtitle = element_text(hjust = 0.5, color = "#83B02F", size = 14, family = "Times New Roman"),
+			axis.title = element_text(color = "black", size = 12, face = "bold", family = "Times New Roman"),
+			axis.text = element_text(color = "black", size = 12, family = "Times New Roman"),
+			legend.key.height = unit(0.6, "cm") 
+		)
+	```
+
+
+snippet grid_plot
+	grid <- function(x) {
+		par(mfrow = c(2, 2))
+		x
+		par(mfrow = c(1, 1))
+	}
+
+snippet colors
+	colors <- c("#83B02F", "#C31E4A", "#008C9E", "#E99F1F", "#743496")
+
+snippet doc_theme
+	doc_theme <- theme_minimal(base_size = 14, base_family = "Times New Roman") +
+	  theme(
+	    panel.background = element_rect(fill = "cornsilk1", color = NA),
+	    panel.grid = element_blank(),
+	    panel.border = element_rect(color = "black", fill = NA, linewidth = 0),
+	    axis.line = element_line(color = "black", linewidth = 0.5),
+	    axis.ticks = element_line(color = "black", linewidth = 0.5),
+	    axis.ticks.length = unit(0.25, "cm"),
+	    plot.background = element_rect(fill = "white", color = NA),
+	    plot.title = element_text(hjust = 0.5, face = "bold", color = "#83B02F", size = 18, family = "Times New Roman"),
+	    plot.subtitle = element_text(hjust = 0.5, color = "#83B02F", size = 14, family = "Times New Roman"),
+	    axis.title = element_text(color = "black", size = 12, face = "bold", family = "Times New Roman"),
+	    axis.text = element_text(color = "black", size = 12, family = "Times New Roman"),
+	    legend.key.height = unit(0.6, "cm")
+	  )
+
+snippet lib
+	library(${1:package})
+
+snippet req
+	require(${1:package})
+
+snippet src
+	source("${1:file.R}")
+
+snippet ret
+	return(${1:code})
+
+snippet mat
+	matrix(${1:data}, nrow = ${2:rows}, ncol = ${3:cols})
+
+snippet sg
+	setGeneric("${1:generic}", function(${2:x, ...}) {
+		standardGeneric("${1:generic}")
+	})
+
+snippet sm
+	setMethod("${1:generic}", ${2:class}, function(${2:x, ...}) {
+		${0}
+	})
+
+snippet sc
+	setClass("${1:Class}", slots = c(${2:name = "type"}))
+
+snippet if
+	if (${1:condition}) {
+		${0}
+	}
+
+snippet el
+	else {
+		${0}
+	}
+
+snippet ei
+	else if (${1:condition}) {
+		${0}
+	}
+
+snippet fun
+	${1:name} <- function(${2:variables}) {
+		${0}
+	}
+
+snippet for
+	for (${1:variable} in ${2:vector}) {
+		${0}
+	}
+
+snippet while
+	while (${1:condition}) {
+		${0}
+	}
+
+snippet switch
+	switch (${1:object},
+		${2:case} = ${3:action}
+	)
+
+snippet apply
+	apply(${1:array}, ${2:margin}, ${3:...})
+
+snippet lapply
+	lapply(${1:list}, ${2:function})
+
+snippet sapply
+	sapply(${1:list}, ${2:function})
+
+snippet mapply
+	mapply(${1:function}, ${2:...})
+
+snippet tapply
+	tapply(${1:vector}, ${2:index}, ${3:function})
+
+snippet vapply
+	vapply(${1:list}, ${2:function}, FUN.VALUE = ${3:type}, ${4:...})
+
+snippet rapply
+	rapply(${1:list}, ${2:function})
+
+snippet ts
+	`r paste("#", date(), "------------------------------\n")`
+
+snippet shinyapp
+	library(shiny)
+	
+	ui <- fluidPage(
+	  ${0}
+	)
+	
+	server <- function(input, output, session) {
+	  
+	}
+	
+	shinyApp(ui, server)
+
+snippet shinymod
+	${1:name}UI <- function(id) {
+	  ns <- NS(id)
+	  tagList(
+		${0}
+	  )
+	}
+	
+	${1:name}Server <- function(id) {
+	  moduleServer(
+	    id,
+	    function(input, output, session) {
+	      
+	    }
+	  )
+	}
+

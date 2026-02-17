@@ -1,0 +1,66 @@
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+// To see all of Zed's default settings without changing your
+// custom settings, run the `open default settings` command
+// from the command palette or from `Zed` application menu.
+{
+  "features": {
+    "edit_prediction_provider": "zed"
+  },
+  "assistant": {
+    "default_model": {
+      "provider": "zed.dev",
+      "model": "claude-3-7-sonnet-latest"
+    },
+    "version": "2"
+  },
+  "show_edit_predictions": true,
+  "languages": {
+    "Rust": {
+      "show_edit_predictions": true
+    }
+  },
+  "vim_mode": false,
+  "theme": "Hate of Nature",
+  "ui_font_size": 16,
+  "buffer_font_size": 22,
+  "ui_font_family": "zed-ui-font",
+  "buffer_font_family": "BlexMono Nerd Font",
+  "buffer_font_weight": 400,
+  "buffer_line_height": { "custom": 1.35 },
+  "active_pane_magnification": 1,
+
+  "inlayHints": {
+    "maxLength": null,
+    "lifetimeElisionHints": {
+      "useParameterNames": true,
+      "enable": "skip_trivial"
+    },
+    "closureReturnTypeHints": {
+      "enable": "always"
+    }
+  },
+  "lsp": {
+    "rust-analyzer": {
+      "initialization_options": {
+        "check": {
+          "command": "clippy" // rust-analyzer.check.command (default: "check")
+        },
+        "cargo": { "autoreload": true },
+        "inlayHints": {
+          "maxLength": null,
+          "lifetimeElisionHints": {
+            "useParameterNames": true,
+            "enable": "skip_trivial"
+          },
+          "closureReturnTypeHints": {
+            "enable": "always"
+          }
+        }
+      },
+      "binary": {
+        "ignore_system_version": true
+      }
+    }
+  }
+}
