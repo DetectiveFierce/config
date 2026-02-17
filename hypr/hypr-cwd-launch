@@ -1,0 +1,205 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Usage:
+#   hypr-cwd-launch cursor|thunar|rstudio|terminal
+# Reads the currently focused window, tries to determine its working directory,
+# then launches the requested app in that directory.
+
+TARGET="${1:-}"
+if [[ -z "$TARGET" ]]; then
+  echo "Usage: $0 cursor|thunar|rstudio|terminal" >&2
+  exit 1
+fi
+
+# Tools required: jq, hyprctl
+if ! command -v jq >/dev/null; then
+  echo "Error: jq is required" >&2
+  exit 1
+fi
+if ! command -v hyprctl >/dev/null; then
+  echo "Error: hyprctl is required" >&2
+  exit 1
+fi
+
+# Helper: safe realpath for /proc/<pid>/cwd
+proc_cwd() {
+  local pid="$1"
+  # readlink -f should resolve the symlink; may fail for zombie or inaccessible
+  readlink -f "/proc/$pid/cwd" 2>/dev/null || true
+}
+
+# Get focused client info (JSON)
+FOCUSED_JSON="$(hyprctl -j activewindow 2>/dev/null || true)"
+
+if [[ -z "$FOCUSED_JSON" || "$FOCUSED_JSON" == "null" ]]; then
+  # No focused window; choose default
+  BASE_DIR="$HOME"
+else
+  CLASS=$(jq -r '.class // empty' <<<"$FOCUSED_JSON")
+  TITLE=$(jq -r '.title // empty' <<<"$FOCUSED_JSON")
+  PID=$(jq -r '.pid // empty' <<<"$FOCUSED_JSON")
+
+  # Normalize class for matching
+  CLASS_LC="$(tr '[:upper:]' '[:lower:]' <<<"${CLASS:-}")"
+
+  # Decide if this is one of the recognized apps
+  IS_CURSOR=false
+  IS_THUNAR=false
+  IS_RSTUDIO=false
+  IS_TERMINAL=false
+
+  case "$CLASS_LC" in
+    cursor|cursor-editor|code|vscode|com-cursor-editor) IS_CURSOR=true ;;
+  esac
+
+  case "$CLASS_LC" in
+    thunar) IS_THUNAR=true ;;
+  esac
+
+  # RStudio classes vary; common: rstudio
+  case "$CLASS_LC" in
+    rstudio) IS_RSTUDIO=true ;;
+  esac
+
+  # Terminals: extend as needed
+  case "$CLASS_LC" in
+    kitty|alacritty|foot|wezterm|org.wezfurlong.wezterm|gnome-terminal|konsole|xterm|st)
+      IS_TERMINAL=true
+      ;;
+  esac
+
+  # Function to try extracting a directory from Thunar window title
+  # Title patterns often like: "Downloads — Thunar" or "user — File System — Thunar"
+  # We attempt to map the last path-ish token to an absolute path under $HOME or /
+  thunar_dir_from_title() {
+    local t="$1"
+    # Remove trailing " — Thunar" or " - Thunar"
+    t="${t// — Thunar/}"
+    t="${t// - Thunar/}"
+
+    # If title shows an absolute path, use it directly
+    if [[ "$t" == /* && -d "$t" ]]; then
+      echo "$t"
+      return 0
+    fi
+
+    # If it's a simple folder name, try common roots
+    local candidate
+    for base in "$HOME" "/"; do
+      candidate="$base/$t"
+      if [[ -d "$candidate" ]]; then
+        echo "$candidate"
+        return 0
+      fi
+    done
+
+    # Could add more heuristics here
+    return 1
+  }
+
+  # Optional: DBus query to Thunar (disabled by default).
+  # Uncomment and adapt if you want robust extraction via DBus.
+  # thunar_dir_from_dbus() {
+  #   command -v gdbus >/dev/null || return 1
+  #   # There isn't a super-stable public API to get current folder for each window.
+  #   # You could explore org.xfce.FileManager interfaces if available in your env.
+  #   return 1
+  # }
+
+  # Determine BASE_DIR
+  BASE_DIR=""
+  if $IS_TERMINAL || $IS_CURSOR || $IS_RSTUDIO; then
+    # Try process cwd first
+    if [[ -n "${PID:-}" ]]; then
+      CWD="$(proc_cwd "$PID")"
+      if [[ -n "$CWD" && -d "$CWD" ]]; then
+        BASE_DIR="$CWD"
+      fi
+    fi
+  fi
+
+  if [[ -z "$BASE_DIR" && $IS_THUNAR == true ]]; then
+    # Try title-based extraction
+    if [[ -n "${TITLE:-}" ]]; then
+      if DIR_FROM_T="$(thunar_dir_from_title "$TITLE")"; then
+        BASE_DIR="$DIR_FROM_T"
+      fi
+    fi
+
+    # As a fallback, try process cwd (not always correct for Thunar)
+    if [[ -z "$BASE_DIR" && -n "${PID:-}" ]]; then
+      CWD="$(proc_cwd "$PID")"
+      if [[ -n "$CWD" && -d "$CWD" ]]; then
+        BASE_DIR="$CWD"
+      fi
+    fi
+  fi
+
+  # If focused app is not one of the four, leave BASE_DIR empty to avoid surprises.
+  # You can choose to default to $HOME by uncommenting:
+  # if [[ -z "$BASE_DIR" ]]; then BASE_DIR="$HOME"; fi
+fi
+
+# If we still don't have a directory, bail gracefully (or default to HOME).
+if [[ -z "${BASE_DIR:-}" || ! -d "$BASE_DIR" ]]; then
+  # Default behavior: do nothing and exit 0 to avoid annoying notifications.
+  # Or: BASE_DIR="$HOME"
+  exit 0
+fi
+
+launch_cursor() {
+  # Cursor typically accepts a dir argument like VS Code
+  if command -v cursor >/dev/null; then
+    setsid -f cursor "$BASE_DIR" >/dev/null 2>&1
+  elif command -v com.cursoreditor.cursor >/dev/null; then
+    setsid -f com.cursoreditor.cursor "$BASE_DIR" >/dev/null 2>&1
+  else
+    # Try code as a fallback if Cursor unavailable
+    if command -v code >/dev/null; then
+      setsid -f code "$BASE_DIR" >/dev/null 2>&1
+    fi
+  fi
+}
+
+launch_thunar() {
+  if command -v thunar >/dev/null; then
+    setsid -f thunar "$BASE_DIR" >/dev/null 2>&1
+  else
+    # Fallback: xdg-open
+    setsid -f xdg-open "$BASE_DIR" >/dev/null 2>&1
+  fi
+}
+
+launch_rstudio() {
+  # RStudio Desktop CLI accepts a dir; opens as a project folder
+  if command -v rstudio >/dev/null; then
+    setsid -f rstudio "$BASE_DIR" >/dev/null 2>&1
+  fi
+}
+
+launch_terminal() {
+  # Pick your terminal; add your own with a case statement if needed
+  if command -v kitty >/dev/null; then
+    setsid -f kitty --directory "$BASE_DIR" >/dev/null 2>&1
+  elif command -v alacritty >/dev/null; then
+    setsid -f alacritty --working-directory "$BASE_DIR" >/dev/null 2>&1
+  elif command -v foot >/dev/null; then
+    setsid -f foot --working-directory="$BASE_DIR" >/dev/null 2>&1
+  elif command -v wezterm >/dev/null; then
+    setsid -f wezterm start --cwd "$BASE_DIR" >/dev/null 2>&1
+  else
+    # Generic: spawn a shell in that dir
+    setsid -f bash -lc "cd \"$BASE_DIR\" && ${TERMINAL:-xterm}" >/dev/null 2>&1
+  fi
+}
+
+case "$TARGET" in
+  cursor)   launch_cursor ;;
+  thunar)   launch_thunar ;;
+  rstudio)  launch_rstudio ;;
+  terminal) launch_terminal ;;
+  *)        exit 0 ;;
+esac
+
+exit 0
