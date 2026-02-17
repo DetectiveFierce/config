@@ -1,17 +1,25 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if ! command -v hyprctl >/dev/null 2>&1; then
-  exit 1
+# Prefer vendored hypr-alttab for consistent behavior across machines.
+# Try repo path first (works even before re-stowing), then ~/.config.
+for vendored_alttab in "$HOME/config/hypr/bin/hypr-alttab" "$HOME/.config/hypr/bin/hypr-alttab"; do
+  if [ -x "$vendored_alttab" ]; then
+    "$vendored_alttab" --switch && exit 0
+  fi
+done
+
+# Fall back to system hypr-alttab if installed.
+if command -v hypr-alttab >/dev/null 2>&1; then
+  hypr-alttab --switch && exit 0
 fi
 
-if ! command -v fuzzel >/dev/null 2>&1; then
-  exit 1
-fi
-
-if ! command -v jq >/dev/null 2>&1; then
-  exit 1
-fi
+# Last resort: simple text-based window switcher via fuzzel.
+for cmd in hyprctl fuzzel jq; do
+  if ! command -v "$cmd" >/dev/null 2>&1; then
+    exit 1
+  fi
+done
 
 menu_input="$(hyprctl -j clients | jq -r '
   map(select(.mapped == true and .hidden == false))

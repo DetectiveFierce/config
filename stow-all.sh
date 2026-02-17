@@ -5,7 +5,7 @@
 set -e
 
 DOTFILES_DIR="$HOME/config"
-XDG_PACKAGES="alacritty foot ghostty hypr kitty niri nvim rstudio walker waybar zed Antigravity Cursor"
+XDG_PACKAGES="alacritty foot ghostty hypr hypr-dock kitty niri nvim rstudio walker waybar zed Antigravity Cursor"
 
 echo "Stowing dotfiles from $DOTFILES_DIR..."
 

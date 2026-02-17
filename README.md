@@ -12,6 +12,7 @@ Personal configuration files managed with [GNU Stow](https://www.gnu.org/softwar
 ├── foot/               → ~/.config/foot/
 ├── ghostty/            → ~/.config/ghostty/
 ├── hypr/               → ~/.config/hypr/
+├── hypr-dock/          → ~/.config/hypr-dock/
 ├── kitty/              → ~/.config/kitty/
 ├── niri/               → ~/.config/niri/
 ├── nvim/               → ~/.config/nvim/
@@ -109,6 +110,7 @@ GNU Stow creates symlinks from target locations back to this repository:
 | **foot** | Wayland terminal |
 | **ghostty** | GPU terminal |
 | **hypr** | Hyprland window manager |
+| **hypr-dock** | hypr-alttab switcher configuration |
 | **kitty** | Terminal emulator |
 | **niri** | Niri window manager |
 | **nvim** | Neovim configuration |
