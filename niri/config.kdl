@@ -266,7 +266,7 @@ layout {
 // This line starts waybar, a commonly used bar for Wayland compositors.
 spawn-at-startup "waybar"
 spawn-at-startup "walker" "--gapplication-service"
-spawn-sh-at-startup "~/.config/hypr/wallpaper-rotator.sh"
+spawn-sh-at-startup "~/.config/hypr/scripts/wallpaper-rotator.sh"
 spawn-sh-at-startup "wl-paste --type text --watch cliphist store"
 spawn-sh-at-startup "wl-paste --type image --watch cliphist store"
 
@@ -466,13 +466,13 @@ binds {
     Super+Shift+E { spawn-sh "foot --app-id=float-term -e zsh -lc 'rga-fzf --query=!.pdf\\$'"; }
     Super+Shift+D { spawn-sh "foot --app-id=float-term -e $SHELL -lc 'source ~/.zshrc && pdf=$(find -type f | fzf --query=.pdf\\$ ); [ -n \"$pdf\" ] && zathura --fork \"$pdf\" >/dev/null 2>&1'"; }
 
-    Super+R       { spawn-sh "foot --app-id=float-term --config=$HOME/.config/foot/float-term.ini -e zsh -lc '~/.local/bin/recent-projects-fzf editor'"; }
-    Super+Shift+R { spawn-sh "foot --app-id=float-term --config=$HOME/.config/foot/float-term.ini -e $SHELL -lc 'source ~/.zshrc && ~/.local/bin/recent-projects-fzf fm'"; }
+    Super+R       { spawn-sh "foot --app-id=float-term --config=$HOME/.config/foot/float-term.ini -e zsh -lc '~/.config/hypr/scripts/recent-projects-fzf editor'"; }
+    Super+Shift+R { spawn-sh "foot --app-id=float-term --config=$HOME/.config/foot/float-term.ini -e $SHELL -lc 'source ~/.zshrc && ~/.config/hypr/scripts/recent-projects-fzf fm'"; }
 
-    Super+Ctrl+C { spawn-sh "~/.local/bin/hypr-cwd-launch cursor"; }
-    Super+Ctrl+F { spawn-sh "~/.local/bin/hypr-cwd-launch thunar"; }
-    Super+Ctrl+R { spawn-sh "~/.local/bin/hypr-cwd-launch rstudio"; }
-    Super+Ctrl+T { spawn-sh "~/.local/bin/hypr-cwd-launch terminal"; }
+    Super+Ctrl+C { spawn-sh "~/.config/hypr/scripts/cwd-launch.sh cursor"; }
+    Super+Ctrl+F { spawn-sh "~/.config/hypr/scripts/cwd-launch.sh thunar"; }
+    Super+Ctrl+R { spawn-sh "~/.config/hypr/scripts/cwd-launch.sh rstudio"; }
+    Super+Ctrl+T { spawn-sh "~/.config/hypr/scripts/cwd-launch.sh terminal"; }
 
     XF86MonBrightnessDown allow-when-locked=true { spawn-sh "ddcutil setvcp 10 - 15 --display 1"; }
     XF86MonBrightnessUp   allow-when-locked=true { spawn-sh "ddcutil setvcp 10 + 15 --display 1"; }

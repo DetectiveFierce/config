@@ -1,4 +1,4 @@
-typeset -U PATH
+typeset -U path PATH
 path=(
   "$HOME/bin"
   "$HOME/.local/bin"
@@ -12,11 +12,19 @@ path=(
   $path
 )
 
+# Prefer system toolchain over rustup shims when both are present.
+path=(${path:#$HOME/.cargo/bin})
+path+=("$HOME/.cargo/bin")
+
 export PNPM_HOME="$HOME/.local/share/pnpm"
 export BUN_INSTALL="$HOME/.bun"
 
-# Oh My Zsh (repo-local)
-export ZSH="$HOME/config/zsh/.oh-my-zsh"
+# Oh My Zsh (prefer repo-local, fallback to user install)
+if [[ -r "$HOME/config/zsh/.oh-my-zsh/oh-my-zsh.sh" ]]; then
+  export ZSH="$HOME/config/zsh/.oh-my-zsh"
+elif [[ -r "$HOME/.oh-my-zsh/oh-my-zsh.sh" ]]; then
+  export ZSH="$HOME/.oh-my-zsh"
+fi
 ZSH_THEME="spaceship"
 
 # Spaceship: keep prompt concise and arrow-based
@@ -52,17 +60,31 @@ plugins=(
   command-not-found
   colored-man-pages
   fzf
-  zoxide
   zsh-autosuggestions
-  fzf-tab
   history-substring-search
   zsh-syntax-highlighting
 )
 
-if [[ -d "$ZSH" ]]; then
+if command -v zoxide >/dev/null 2>&1; then
+  plugins+=(zoxide)
+fi
+
+FZF_TAB_PLUGIN_FILE=""
+if [[ -n "${ZSH:-}" ]] && [[ -d "$ZSH/plugins/fzf-tab" || -d "$ZSH/custom/plugins/fzf-tab" ]]; then
+  plugins+=(fzf-tab)
+elif [[ -r "/usr/share/zsh/plugins/fzf-tab/fzf-tab.plugin.zsh" ]]; then
+  FZF_TAB_PLUGIN_FILE="/usr/share/zsh/plugins/fzf-tab/fzf-tab.plugin.zsh"
+elif [[ -r "/usr/share/zsh/plugins/fzf-tab-git/fzf-tab.plugin.zsh" ]]; then
+  FZF_TAB_PLUGIN_FILE="/usr/share/zsh/plugins/fzf-tab-git/fzf-tab.plugin.zsh"
+elif [[ -r "/usr/share/zsh/plugins/fzf-tab-source/fzf-tab.plugin.zsh" ]]; then
+  FZF_TAB_PLUGIN_FILE="/usr/share/zsh/plugins/fzf-tab-source/fzf-tab.plugin.zsh"
+fi
+
+if [[ -n "${ZSH:-}" ]] && [[ -r "$ZSH/oh-my-zsh.sh" ]]; then
   source "$ZSH/oh-my-zsh.sh"
-else
-  echo "Oh My Zsh not found at $ZSH"
+fi
+if [[ -n "${FZF_TAB_PLUGIN_FILE:-}" ]]; then
+  source "$FZF_TAB_PLUGIN_FILE"
 fi
 
 # Custom dir section: "~" at $HOME, otherwise "/<current-dir>"
@@ -78,11 +100,21 @@ spaceship_dir() {
     display="/${PWD:t}"
   fi
 
-  spaceship::section \
-    --color "$SPACESHIP_DIR_COLOR" \
-    --prefix "$SPACESHIP_DIR_PREFIX" \
-    --suffix "$SPACESHIP_DIR_SUFFIX" \
-    "$display"
+  if (( $+functions[spaceship::section] )); then
+    spaceship::section \
+      --color "$SPACESHIP_DIR_COLOR" \
+      --prefix "$SPACESHIP_DIR_PREFIX" \
+      --suffix "$SPACESHIP_DIR_SUFFIX" \
+      "$display"
+  elif (( $+functions[_prompt_section] )); then
+    _prompt_section \
+      "$SPACESHIP_DIR_COLOR" \
+      "$SPACESHIP_DIR_PREFIX" \
+      "$display" \
+      "$SPACESHIP_DIR_SUFFIX"
+  else
+    printf "%s%s%s" "$SPACESHIP_DIR_PREFIX" "$display" "$SPACESHIP_DIR_SUFFIX"
+  fi
 }
 
 # Completion + tab UX
@@ -120,7 +152,9 @@ zstyle ':fzf-tab:complete:*:*' fzf-preview \
        head -200 "$realpath"
      fi
    fi'
-bindkey '^I' fzf-tab-complete
+if (( $+widgets[fzf-tab-complete] )); then
+  bindkey '^I' fzf-tab-complete
+fi
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
 
@@ -129,6 +163,7 @@ HISTSIZE=10000
 SAVEHIST=10000
 HISTFILE=~/.zsh_history
 setopt SHARE_HISTORY HIST_IGNORE_ALL_DUPS HIST_SAVE_NO_DUPS HIST_FIND_NO_DUPS
+setopt INTERACTIVE_COMMENTS
 
 # Zoxide
 if command -v zoxide >/dev/null 2>&1; then
@@ -137,8 +172,12 @@ if command -v zoxide >/dev/null 2>&1; then
 fi
 
 # Aliases
-alias python="$HOME/python/venv/bin/python"
-alias pip="$HOME/python/venv/bin/pip"
+if [[ -x "$HOME/python/venv/bin/python" ]]; then
+  alias python="$HOME/python/venv/bin/python"
+fi
+if [[ -x "$HOME/python/venv/bin/pip" ]]; then
+  alias pip="$HOME/python/venv/bin/pip"
+fi
 alias tmux="tmux -2"
 alias nvimpush='cd ~/.config/nvim && git add . && git commit -m "update $(TZ=America/New_York date +\"%Y-%m-%d %H:%M:%S %Z\")" && git push'
 alias nvimpull='cd ~/.config/nvim && git pull'
@@ -152,4 +191,8 @@ alias create-tex="$HOME/Landing Zone/Latex Projects/create-tex.sh"
 # Ghostty-inspired fzf colors
 export FZF_DEFAULT_OPTS='--color=fg:#99cc58,bg:#22350a,hl:#66d9ef,fg+:#e8ffb9,bg+:#2a4010,hl+:#a6e22e,info:#4d6626,prompt:#f92672,pointer:#a6e22e,marker:#ae81ff,spinner:#66d9ef,header:#fd971f'
 
-command -v neofetch >/dev/null 2>&1 && neofetch
+if command -v neofetch >/dev/null 2>&1; then
+  neofetch
+elif command -v fastfetch >/dev/null 2>&1; then
+  fastfetch
+fi

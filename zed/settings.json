@@ -4,11 +4,11 @@
 // custom settings, run the `open default settings` command
 // from the command palette or from `Zed` application menu.
 {
+  "edit_predictions": {
+    "provider": "copilot"
+  },
   "icon_theme": "Colored Zed Icons Theme Dark",
   "lsp_document_colors": "background",
-  "features": {
-    "edit_prediction_provider": "copilot"
-  },
   "agent": {
     "default_profile": "write",
     "default_model": {

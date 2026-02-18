@@ -1,0 +1,321 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+XDG_PACKAGES=(alacritty foot fuzzel ghostty hypr hypr-dock kitty niri nvim rstudio walker waybar zed Antigravity Cursor)
+HOME_PACKAGES=(zsh "GTK Theme")
+
+usage() {
+  cat <<'EOF'
+Usage:
+  dotfiles apply [--dry-run] [--backup] [--adopt] [--verbose]
+  dotfiles remove [--dry-run] [--verbose]
+  dotfiles status
+  dotfiles doctor
+
+Commands:
+  apply   Stow all configured packages.
+  remove  Unstow all configured packages.
+  status  Show managed/unmanaged/missing target files.
+  doctor  Check prerequisites and dry-run stow for conflicts.
+
+Options:
+  --dry-run  Print what would happen without changing files.
+  --backup   Before apply, move conflicting files into:
+             ~/.local/state/dotfiles/backups/<timestamp>/
+  --adopt    Use stow --adopt while applying (pull target files into repo).
+  --verbose  Show verbose stow output.
+EOF
+}
+
+all_packages() {
+  printf '%s\n' "${XDG_PACKAGES[@]}" "${HOME_PACKAGES[@]}"
+}
+
+is_xdg_package() {
+  local pkg="$1"
+  for x in "${XDG_PACKAGES[@]}"; do
+    if [[ "$x" == "$pkg" ]]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
+target_for_package() {
+  local pkg="$1"
+  if is_xdg_package "$pkg"; then
+    printf '%s\n' "$HOME/.config/$pkg"
+  elif [[ "$pkg" == "GTK Theme" ]]; then
+    printf '%s\n' "$HOME/.local/share/themes/Dark-Green-Jungle"
+  else
+    printf '%s\n' "$HOME"
+  fi
+}
+
+require_stow() {
+  if ! command -v stow >/dev/null 2>&1; then
+    echo "error: GNU Stow is required but not installed." >&2
+    exit 1
+  fi
+}
+
+for_each_package_file() {
+  local pkg="$1"
+  find "$DOTFILES_DIR/$pkg" -mindepth 1 \( -type f -o -type l \) -print0
+}
+
+run_stow() {
+  local dry_run="$1"
+  local verbose="$2"
+  local mode="$3"
+  local pkg="$4"
+  local adopt="$5"
+
+  local target
+  target="$(target_for_package "$pkg")"
+  if is_xdg_package "$pkg" || [[ "$pkg" == "GTK Theme" ]]; then
+    mkdir -p "$target"
+  fi
+
+  local -a cmd
+  cmd=(stow -d "$DOTFILES_DIR" -t "$target")
+  if [[ "$dry_run" == "1" ]]; then
+    cmd+=(-n)
+  fi
+  if [[ "$verbose" == "1" ]]; then
+    cmd+=(-v)
+  fi
+  if [[ "$mode" == "apply" ]]; then
+    cmd+=(--no-folding)
+    if [[ "$adopt" == "1" ]]; then
+      cmd+=(--adopt)
+    fi
+    cmd+=(-S "$pkg")
+  else
+    cmd+=(-D -S "$pkg")
+  fi
+
+  "${cmd[@]}"
+}
+
+backup_conflicts_for_package() {
+  local pkg="$1"
+  local backup_root="$2"
+
+  local target_root
+  target_root="$(target_for_package "$pkg")"
+
+  local has_error=0
+  while IFS= read -r -d '' src; do
+    local rel target resolved_target resolved_src backup_dest
+    rel="${src#"$DOTFILES_DIR/$pkg/"}"
+    target="$target_root/$rel"
+
+    if [[ ! -e "$target" && ! -L "$target" ]]; then
+      continue
+    fi
+
+    if [[ -L "$target" ]]; then
+      resolved_target="$(readlink -f "$target" || true)"
+      resolved_src="$(readlink -f "$src" || true)"
+      if [[ "$resolved_target" == "$resolved_src" ]]; then
+        continue
+      fi
+    fi
+
+    if [[ -d "$target" && ! -L "$target" ]]; then
+      echo "error: conflict is a real directory, refusing to auto-backup: $target" >&2
+      has_error=1
+      continue
+    fi
+
+    backup_dest="$backup_root/$pkg/$rel"
+    mkdir -p "$(dirname "$backup_dest")"
+    mv "$target" "$backup_dest"
+    echo "backed up: $target -> $backup_dest"
+  done < <(for_each_package_file "$pkg")
+
+  return "$has_error"
+}
+
+apply_all() {
+  local dry_run="$1"
+  local backup="$2"
+  local adopt="$3"
+  local verbose="$4"
+  local failures=0
+  local backup_root=""
+
+  if [[ "$backup" == "1" ]]; then
+    backup_root="$HOME/.local/state/dotfiles/backups/$(date +%Y%m%d-%H%M%S)"
+    mkdir -p "$backup_root"
+    echo "Backup root: $backup_root"
+  fi
+
+  while IFS= read -r pkg; do
+    [[ -d "$DOTFILES_DIR/$pkg" ]] || continue
+    echo "==> apply: $pkg"
+    if [[ "$backup" == "1" && "$dry_run" == "0" ]]; then
+      if ! backup_conflicts_for_package "$pkg" "$backup_root"; then
+        failures=$((failures + 1))
+        continue
+      fi
+    fi
+
+    if ! run_stow "$dry_run" "$verbose" "apply" "$pkg" "$adopt"; then
+      failures=$((failures + 1))
+    fi
+  done < <(all_packages)
+
+  if [[ "$failures" -gt 0 ]]; then
+    echo "apply finished with $failures failing package(s)." >&2
+    return 1
+  fi
+}
+
+remove_all() {
+  local dry_run="$1"
+  local verbose="$2"
+  local failures=0
+
+  while IFS= read -r pkg; do
+    [[ -d "$DOTFILES_DIR/$pkg" ]] || continue
+    echo "==> remove: $pkg"
+    if ! run_stow "$dry_run" "$verbose" "remove" "$pkg" "0"; then
+      failures=$((failures + 1))
+    fi
+  done < <(all_packages)
+
+  if [[ "$failures" -gt 0 ]]; then
+    echo "remove finished with $failures failing package(s)." >&2
+    return 1
+  fi
+}
+
+status_all() {
+  local pkg target_root managed unmanaged missing
+
+  while IFS= read -r pkg; do
+    [[ -d "$DOTFILES_DIR/$pkg" ]] || continue
+    target_root="$(target_for_package "$pkg")"
+    managed=0
+    unmanaged=0
+    missing=0
+
+    while IFS= read -r -d '' src; do
+      local rel target resolved_target resolved_src
+      rel="${src#"$DOTFILES_DIR/$pkg/"}"
+      target="$target_root/$rel"
+
+      if [[ -L "$target" ]]; then
+        resolved_target="$(readlink -f "$target" || true)"
+        resolved_src="$(readlink -f "$src" || true)"
+        if [[ "$resolved_target" == "$resolved_src" ]]; then
+          managed=$((managed + 1))
+        else
+          unmanaged=$((unmanaged + 1))
+        fi
+      elif [[ -e "$target" ]]; then
+        unmanaged=$((unmanaged + 1))
+      else
+        missing=$((missing + 1))
+      fi
+    done < <(for_each_package_file "$pkg")
+
+    printf '%-12s managed:%4d  unmanaged:%4d  missing:%4d\n' "$pkg" "$managed" "$unmanaged" "$missing"
+  done < <(all_packages)
+}
+
+doctor() {
+  require_stow
+  echo "stow: $(command -v stow)"
+  echo "dotfiles dir: $DOTFILES_DIR"
+  echo
+  echo "Running dry-run apply checks..."
+
+  local failures=0
+  local pkg
+  while IFS= read -r pkg; do
+    [[ -d "$DOTFILES_DIR/$pkg" ]] || continue
+    if run_stow "1" "0" "apply" "$pkg" "0" >/tmp/dotfiles-doctor-"$pkg".log 2>&1; then
+      echo "  [ok] $pkg"
+    else
+      failures=$((failures + 1))
+      echo "  [conflict] $pkg"
+      sed -n '1,12p' /tmp/dotfiles-doctor-"$pkg".log
+    fi
+  done < <(all_packages)
+
+  rm -f /tmp/dotfiles-doctor-*.log
+
+  echo
+  if [[ "$failures" -eq 0 ]]; then
+    echo "Doctor check passed."
+  else
+    echo "Doctor found $failures package conflict(s)." >&2
+    return 1
+  fi
+}
+
+main() {
+  require_stow
+
+  if [[ "$#" -lt 1 ]]; then
+    usage
+    exit 1
+  fi
+
+  local cmd="$1"
+  shift
+
+  local dry_run=0
+  local backup=0
+  local adopt=0
+  local verbose=0
+
+  while [[ "$#" -gt 0 ]]; do
+    case "$1" in
+      --dry-run) dry_run=1 ;;
+      --backup) backup=1 ;;
+      --adopt) adopt=1 ;;
+      --verbose) verbose=1 ;;
+      -h|--help)
+        usage
+        exit 0
+        ;;
+      *)
+        echo "error: unknown option: $1" >&2
+        usage
+        exit 1
+        ;;
+    esac
+    shift
+  done
+
+  case "$cmd" in
+    apply)
+      apply_all "$dry_run" "$backup" "$adopt" "$verbose"
+      ;;
+    remove)
+      remove_all "$dry_run" "$verbose"
+      ;;
+    status)
+      status_all
+      ;;
+    doctor)
+      doctor
+      ;;
+    -h|--help|help)
+      usage
+      ;;
+    *)
+      echo "error: unknown command: $cmd" >&2
+      usage
+      exit 1
+      ;;
+  esac
+}
+
+main "$@"

@@ -3,14 +3,14 @@
     // Actually config.go implementation uses WidthPercent/HeightPercent but logic isn't fully using them yet.
     // Let's stick to the user request.
     "widthPercent": 100,
-    "heightPercent": 60,
+    "heightPercent": 44,
     // Font Size in pixels
-    "fontSize": 20,
+    "fontSize": 24,
     // Preview card width in pixels (Default 300)
-    "previewWidth": 400,
+    "previewWidth": 704,
     // Multi-monitor behavior
     // true = Show workspaces/windows from all monitors
-    "showAllMonitors": true,
+    "showAllMonitors": false,
     // Icon Size for the overlay badge (0 = Auto, >0 = Fixed size in pixels)
-    "iconSize": 0
+    "iconSize": 44
 }

@@ -1,123 +1,110 @@
 # Dotfiles
 
-Personal configuration files managed with [GNU Stow](https://www.gnu.org/software/stow/).
+Personal config files managed with [GNU Stow](https://www.gnu.org/software/stow/) through a single control script: `./dotfiles`.
 
-## Structure
+## Source of truth
 
-```
+This repository is the canonical source for your user config files.
+
+- Edit files in this repo (for example, `$HOME/config`)
+- Apply symlinks into `$HOME` with `./dotfiles apply`
+- Track all changes with Git in this repo
+
+```text
 ~/config/
-├── alacritty/          → ~/.config/alacritty/
-├── Antigravity/        → ~/.config/Antigravity/
-├── Cursor/             → ~/.config/Cursor/
-├── foot/               → ~/.config/foot/
-├── fuzzel/             → ~/.config/fuzzel/
-├── ghostty/            → ~/.config/ghostty/
-├── hypr/               → ~/.config/hypr/
-├── hypr-dock/          → ~/.config/hypr-dock/
-├── kitty/              → ~/.config/kitty/
-├── niri/               → ~/.config/niri/
-├── nvim/               → ~/.config/nvim/
-├── rstudio/            → ~/.config/rstudio/
-├── walker/             → ~/.config/walker/
-├── waybar/             → ~/.config/waybar/
-├── zed/                → ~/.config/zed/
+├── alacritty/          -> ~/.config/alacritty/
+├── Antigravity/        -> ~/.config/Antigravity/
+├── Cursor/             -> ~/.config/Cursor/
+├── foot/               -> ~/.config/foot/
+├── fuzzel/             -> ~/.config/fuzzel/
+├── ghostty/            -> ~/.config/ghostty/
+├── hypr/               -> ~/.config/hypr/
+├── hypr-dock/          -> ~/.config/hypr-dock/
+├── kitty/              -> ~/.config/kitty/
+├── niri/               -> ~/.config/niri/
+├── nvim/               -> ~/.config/nvim/
+├── rstudio/            -> ~/.config/rstudio/
+├── walker/             -> ~/.config/walker/
+├── waybar/             -> ~/.config/waybar/
+├── zed/                -> ~/.config/zed/
 └── zsh/
-    └── .zshrc          → ~/.zshrc
+    └── .zshrc          -> ~/.zshrc
 ```
 
-## Quick Start
+## Packages
 
-### Apply All Configs
+XDG targets (`~/.config/<name>/...`):
+
+- `alacritty`
+- `Antigravity`
+- `Cursor`
+- `foot`
+- `fuzzel`
+- `ghostty`
+- `hypr`
+- `hypr-dock`
+- `kitty`
+- `niri`
+- `nvim`
+- `rstudio`
+- `walker`
+- `waybar`
+- `zed`
+
+Home target (`~/...`):
+
+- `zsh`
+
+## Commands
+
 ```bash
-./stow-all.sh
+# Check prerequisites and detect stow conflicts
+./dotfiles doctor
+
+# Show per-package managed/unmanaged/missing status
+./dotfiles status
+
+# First-time setup (safe): backup conflicts, then symlink
+./dotfiles apply --backup
+
+# Normal re-apply after edits
+./dotfiles apply
+
+# Preview without changing files
+./dotfiles apply --dry-run
+
+# Remove all managed symlinks
+./dotfiles remove
+
+# Validate before pushing to main
+./scripts/pre-push-checks.sh
 ```
 
-### Remove All Symlinks
+## First-time migration (recommended)
+
+If files already exist in `~/.config` or `~`, run:
+
 ```bash
-./unstow-all.sh
+./dotfiles apply --backup
 ```
 
-## Manual Usage
+Conflicting files are moved to:
 
-### Stow a Single Package
-```bash
-cd ~/config
-
-# For XDG configs (apps in ~/.config/)
-mkdir -p ~/.config/nvim
-stow -t ~/.config/nvim -d . -S nvim --no-folding
-
-# For home directory files
-cd zsh && stow -t ~ .
+```text
+~/.local/state/dotfiles/backups/<timestamp>/
 ```
 
-### Unstow a Single Package
-```bash
-cd ~/config
-stow -D -t ~/.config/nvim -d . -S nvim
+Then Stow creates symlinks back into this repo.
 
-# Or for zsh
-cd zsh && stow -D -t ~ .
-```
+## Legacy wrappers
 
-### Add a New Config
+These still work, but now delegate to `./dotfiles`:
 
-1. Create the directory in `~/config/`:
-   ```bash
-   mkdir -p ~/config/newapp
-   ```
+- `./stow-all.sh` -> `./dotfiles apply`
+- `./unstow-all.sh` -> `./dotfiles remove`
 
-2. Add your config files to it
+## Notes
 
-3. Stow it:
-   ```bash
-   mkdir -p ~/.config/newapp
-   stow -t ~/.config/newapp -d ~/config -S newapp --no-folding
-   ```
-
-4. Update `stow-all.sh` to include the new package
-
-## How It Works
-
-GNU Stow creates symlinks from target locations back to this repository:
-
-```
-~/.config/nvim/init.lua  →  ~/config/nvim/init.lua
-~/.zshrc                 →  ~/config/zsh/.zshrc
-```
-
-**Editing**: Edit files directly in `~/config/`. Changes appear immediately at the target location via symlinks.
-
-**Version Control**: This directory can be a git repo. All configs are versioned in one place.
-
-## Flags Reference
-
-| Flag | Description |
-|------|-------------|
-| `-t <dir>` | Target directory for symlinks |
-| `-d <dir>` | Directory containing stow packages |
-| `-S <pkg>` | Stow (create symlinks for) a package |
-| `-D <pkg>` | Delete (remove symlinks for) a package |
-| `-v` | Verbose output |
-| `--no-folding` | Create individual symlinks, not directory symlinks |
-
-## Included Configs
-
-| App | Description |
-|-----|-------------|
-| **alacritty** | GPU-accelerated terminal |
-| **Antigravity** | VS Code fork - settings, keybindings |
-| **Cursor** | AI editor - settings, keybindings, theme |
-| **foot** | Wayland terminal |
-| **fuzzel** | Application launcher |
-| **ghostty** | GPU terminal |
-| **hypr** | Hyprland window manager |
-| **hypr-dock** | hypr-alttab switcher configuration |
-| **kitty** | Terminal emulator |
-| **niri** | Niri window manager |
-| **nvim** | Neovim configuration |
-| **rstudio** | RStudio IDE settings, snippets, theme |
-| **walker** | Launcher configuration and themes |
-| **waybar** | Wayland status bar |
-| **zed** | Zed editor |
-| **zsh** | Shell config with oh-my-zsh |
+- `./dotfiles apply --adopt` is available if you explicitly want Stow to adopt target files into the repo.
+- Hypr monitor profiles live in `hypr/profiles/` and are sourced from `hypr/hyprland.conf`.
+- Hypr directory layout is documented in `hypr/README.md`.

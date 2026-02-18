@@ -16,6 +16,7 @@ window#waybar.hidden {
 
 /* Shared spacing and shape: match workspaces container */
 #workspaces,
+#custom-sticky-note,
 #custom-weather,
 #pulseaudio,
 #custom-mem,
@@ -32,6 +33,7 @@ window#waybar.hidden {
 }
 
 /* Shared inner padding for non-button modules */
+#custom-sticky-note,
 #custom-weather,
 #pulseaudio,
 #custom-mem,
@@ -77,6 +79,12 @@ window#waybar.hidden {
 }
 
 /* Per-module colors */
+#custom-sticky-note {
+    background: transparent;
+    color: #89a84d;
+    padding: 4px 6px;
+}
+
 #custom-weather {
     background: #7e9c42;
 }
@@ -160,6 +168,7 @@ window#waybar.hidden {
 
 #workspaces,
 #workspaces button,
+#custom-sticky-note,
 #custom-weather,
 #pulseaudio,
 #custom-mem,
@@ -179,6 +188,7 @@ window#waybar.hidden {
 
 /* Unified hover background and text color (warmer, less vivid) */
 #workspaces button:hover,
+#custom-sticky-note:hover,
 #custom-weather:hover,
 #pulseaudio:hover,
 #custom-mem:hover,
@@ -214,4 +224,12 @@ window#waybar.hidden {
 /* Optional: group container subtle glow on hover without moving anything */
 #workspaces:hover {
     box-shadow: 0 3px 12px rgba(0, 0, 0, 0.22);
+}
+
+/* Sticky note stays icon-only (no pill background) */
+#custom-sticky-note:hover {
+    background-color: transparent;
+    color: #a5c73a;
+    box-shadow: none;
+    text-shadow: none;
 }

@@ -4,8 +4,8 @@
     "margin": 0,
     "spacing": 0,
     "modules-left": ["hyprland/workspaces",],
-    "modules-center": ["custom/weather"],
-    "modules-right": ["temperature", "cpu", "custom/mem","pulseaudio", "backlight", "battery", "clock", "tray"],
+    "modules-center": [],
+    "modules-right": ["custom/sticky-note", "custom/weather", "temperature", "cpu", "custom/mem","pulseaudio", "backlight", "battery", "clock", "tray"],
 
 
     //***************************
@@ -18,12 +18,21 @@
         "format": "{:%a, %d %b, %I:%M %p}"
     },
 
+    "custom/sticky-note": {
+        "format": "{}",
+        "exec": "echo ''",
+        "return-type": "text",
+        "interval": 0,
+        "tooltip": false,
+        "on-click": "$HOME/.config/waybar/scripts/sticky-note-launch.sh"
+    },
+
     "custom/weather": {
-    "format": "{}°",
-    "tooltip": true,
-    "interval": 3600,
-    "exec": "wttrbar --fahrenheit",
-    "return-type": "json"
+        "format": "{}",
+        "tooltip": true,
+        "interval": 3600,
+        "exec": "wttrbar --fahrenheit --nerd --custom-indicator '{temp_F}° {ICON}'",
+        "return-type": "json"
     },
 
     "temperature": {

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+APP_SCRIPT="$SCRIPT_DIR/sticky_note.py"
+
+existing_pid="$(
+    ps -eo pid=,comm=,args= \
+        | awk -v app="$APP_SCRIPT" '$2 ~ /^python(3([.][0-9]+)?)?$/ && index($0, app) {print $1; exit}'
+)"
+if [[ -n "${existing_pid:-}" ]]; then
+    hyprctl dispatch focuswindow "title:Sticky Note" >/dev/null 2>&1 || true
+    exit 0
+fi
+
+nohup python3 "$APP_SCRIPT" >/tmp/sticky-note.log 2>&1 &
