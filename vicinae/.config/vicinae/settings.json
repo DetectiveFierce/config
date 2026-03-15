@@ -1,0 +1,16 @@
+{
+  "$schema": "https://vicinae.com/schemas/config.json",
+  "theme": {
+    "light": {
+      "name": "dark-green-jungle",
+      "icon_theme": "pixelitos"
+    },
+    "dark": {
+      "name": "dark-green-jungle",
+      "icon_theme": "pixelitos"
+    }
+  },
+  "launcher_window": {
+    "opacity": 0.84
+  }
+}

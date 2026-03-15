@@ -16,11 +16,11 @@
 
 `hypr/hyprland.conf` loads this by default:
 
-`source = $HOME/.config/hypr/profiles/desktop.conf`
+`source = /home/shared-psychosis/.config/hypr/profiles/desktop.conf`
 
 To switch to laptop mode, replace with:
 
-`source = $HOME/.config/hypr/profiles/laptop.conf`
+`source = /home/shared-psychosis/.config/hypr/profiles/laptop.conf`
 
 then reload:
 
@@ -31,3 +31,9 @@ hyprctl reload
 ## Compatibility
 
 - `hypr/hypr-cwd-launch` is kept as a shim to `hypr/scripts/cwd-launch.sh`.
+
+## Waybar durability
+
+- `hypr/scripts/waybar-supervisor.sh` keeps Waybar running and relaunches it 1 second after a crash.
+- Hyprland autostart uses the supervisor instead of launching `waybar` directly.
+- To stop both the bar and the supervisor intentionally, run `pkill -f waybar-supervisor.sh`.

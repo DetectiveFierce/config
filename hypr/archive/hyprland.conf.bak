@@ -48,7 +48,7 @@ exec-once = wl-paste --type image --watch cliphist store
 #############################
 #ENVIRONMENT VARIABLES ###
 #############################  See https://wiki.hyprland.org/Configuring/Environment-variables/
-env = GTK_THEME,Dark-Green-Jungle
+env = GTK_THEME,Hate-of-Nature
 env = XDG_CURRENT_DESKTOP,Hyprland
 env = XDG_SESSION_TYPE,wayland
 env = XDG_SESSION_DESKTOP,Hyprland

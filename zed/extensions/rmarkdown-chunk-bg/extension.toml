@@ -1,0 +1,31 @@
+id = "rmarkdown-chunk-bg"
+name = "R Markdown Chunk Background"
+version = "0.1.0"
+schema_version = 1
+description = "R Markdown syntax layer that captures fenced chunk content for theme background styling."
+repository = "https://example.com/local/rmarkdown-chunk-bg"
+authors = ["shared-psychosis"]
+themes = []
+icon_themes = []
+languages = ["languages/rmarkdown", "languages/rchunk"]
+capabilities = []
+
+[lib]
+
+[grammars.markdown]
+repository = "https://github.com/tree-sitter-grammars/tree-sitter-markdown"
+rev = "afaa4138517363362f54c89330c9d79391e81168"
+path = "tree-sitter-markdown"
+
+[grammars.markdown_inline]
+repository = "https://github.com/tree-sitter-grammars/tree-sitter-markdown"
+rev = "afaa4138517363362f54c89330c9d79391e81168"
+path = "tree-sitter-markdown-inline"
+
+[language_servers]
+
+[context_servers]
+
+[agent_servers]
+
+[slash_commands]

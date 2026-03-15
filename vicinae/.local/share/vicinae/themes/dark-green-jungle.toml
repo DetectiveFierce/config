@@ -1,0 +1,36 @@
+[meta]
+name = "Dark Green Jungle"
+description = "Dark green palette matching the rest of this setup."
+variant = "dark"
+inherits = "vicinae-dark"
+
+[colors.core]
+accent = "#a5c73a"
+accent_foreground = "#172304"
+background = "#1f2b0f"
+foreground = "#d7e9b0"
+secondary_background = "#3b5012"
+border = "#6e8936"
+
+[colors.main_window]
+border = "#7e9c42"
+footer = { background = "#2a3b0e" }
+
+[colors.settings_window]
+border = "#7e9c42"
+
+[colors.text]
+default = "#d7e9b0"
+muted = "#b6d872"
+placeholder = "#89a84d"
+selection = { background = "#7e9c42", foreground = "#172304" }
+
+[colors.input]
+border = "#6e8936"
+border_focus = "#a5c73a"
+
+[colors.list.item.selection]
+background = "#516821"
+foreground = "#d7e9b0"
+secondary_background = "#5d762a"
+secondary_foreground = "#d7e9b0"

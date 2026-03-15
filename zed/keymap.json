@@ -118,7 +118,7 @@
       "ctrl-/": "editor::GoToDefinition",
       "ctrl-shift-j": "editor::GoToDefinitionSplit",
       "ctrl-.": "editor::GoToImplementation",
-      "ctrl-h": "editor::GoToTypeDefinitionSplit",
+      "ctrl-h": ["buffer_search::Deploy", { "replace_enabled": true }],
 
       "ctrl-f12": "editor::GoToTypeDefinition",
 
@@ -381,7 +381,7 @@
       "alt-ctrl-o": "projects::OpenRecent",
       "alt-ctrl-shift-b": "branches::OpenRecent",
       "ctrl-~": "workspace::NewTerminal",
-      "ctrl-s": "workspace::Save",
+      "ctrl-s": ["workspace::SendKeystrokes", "ctrl-s ctrl-alt-k"],
       "ctrl-k s": "workspace::SaveWithoutFormat",
       "ctrl-shift-s": "workspace::SaveAs",
       "ctrl-n": "workspace::NewFile",
@@ -408,11 +408,11 @@
       "ctrl-p": "file_finder::Toggle",
       "alt-tab": "tab_switcher::Toggle",
       "alt-shift-tab": ["tab_switcher::Toggle", { "select_last": true }],
-      "ctrl-e": "file_finder::Toggle",
+      "ctrl-e": "workspace::ToggleLeftDock",
       "ctrl-shift-p": "command_palette::Toggle",
 
       "ctrl-shift-m": "diagnostics::Deploy",
-      "ctrl-shift-e": "project_panel::ToggleFocus",
+      "ctrl-shift-e": "agent::ToggleFocus",
       "ctrl-shift-b": "outline_panel::ToggleFocus",
       "ctrl-?": "agent::ToggleFocus",
       "ctrl-alt-s": "workspace::SaveAll",
@@ -646,5 +646,12 @@
       "shift-home": "terminal::ScrollToTop",
       "shift-end": "terminal::ScrollToBottom",
     },
+  },
+  {
+    "context": "Workspace",
+    "bindings": {
+      "ctrl-alt-k": ["task::Spawn", { "task_name": "Knit Current Rmd" }],
+      "ctrl-s": ["workspace::SendKeystrokes", "ctrl-s ctrl-alt-k"]
+    }
   },
 ]

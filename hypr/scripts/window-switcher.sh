@@ -94,8 +94,10 @@ run_alttab() {
   local cmd="$1"
   local -a env_overrides=()
 
-  env_overrides+=("XDG_DATA_HOME=$ALIAS_DATA_HOME")
-  env_overrides+=("XDG_DATA_DIRS=$ORIG_XDG_DATA_HOME:$ORIG_XDG_DATA_DIRS")
+  # Keep the real data home so GTK can resolve user icon themes from
+  # ~/.local/share/icons; expose wmclass alias desktop entries via data dirs.
+  env_overrides+=("XDG_DATA_HOME=$ORIG_XDG_DATA_HOME")
+  env_overrides+=("XDG_DATA_DIRS=$ALIAS_DATA_HOME:$ORIG_XDG_DATA_HOME:$ORIG_XDG_DATA_DIRS")
 
   if [ -n "$ICON_THEME" ]; then
     env_overrides+=("GTK_ICON_THEME=$ICON_THEME")

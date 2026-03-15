@@ -17,6 +17,9 @@
     }
   },
   "show_edit_predictions": true,
+  "file_types": {
+    "RMarkdown": ["Rmd", "rmd", "Rmarkdown", "rmarkdown"]
+  },
   "languages": {
     "Rust": {
       "show_edit_predictions": true
@@ -24,6 +27,24 @@
   },
   "vim_mode": false,
   "theme": "Hate of Nature 2",
+  "theme_overrides": {
+    "Hate of Nature 2": {
+      "syntax": {
+        "embedded": {
+          "background_color": "#24370a"
+        },
+        "embedded.rmd_chunk": {
+          "background_color": "#24370a"
+        },
+        "punctuation.embedded.markup.rmd_chunk": {
+          "background_color": "#24370a"
+        },
+        "rmd_chunk": {
+          "background_color": "#24370a"
+        }
+      }
+    }
+  },
   "ui_font_size": 16,
   "buffer_font_size": 22,
   "ui_font_family": "zed-ui-font",

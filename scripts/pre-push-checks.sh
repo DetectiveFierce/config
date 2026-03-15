@@ -23,6 +23,7 @@ shell_scripts=(
   "./stow-all.sh"
   "./unstow-all.sh"
   "./hypr/hypr-cwd-launch"
+  "./scripts/build-hate-of-nature-gtk-theme.sh"
   "./scripts/pre-push-checks.sh"
 )
 while IFS= read -r -d '' script; do
@@ -34,6 +35,36 @@ for script in "${shell_scripts[@]}"; do
   printf '  [ok] %s\n' "$script"
 done
 
+echo
+echo "==> perl syntax checks"
+perl -c "./scripts/test-hate-of-nature-gtk-theme-colors.pl"
+perl -c "./scripts/normalize-hate-of-nature-gtk-theme-colors.pl"
+perl -c "./scripts/test-hate-of-nature-gtk-theme-light-backgrounds.pl"
+perl -c "./scripts/test-hate-of-nature-gtk-theme-selector-coverage.pl"
+
+echo
+echo "==> python syntax checks"
+python3 - <<'PY'
+import os
+import py_compile
+import tempfile
+
+targets = [
+    "./scripts/test-hate-of-nature-gtk-theme-parse.py",
+    "./scripts/test-hate-of-nature-gtk-theme-assets.py",
+    "./scripts/test-hate-of-nature-gtk-theme-symbols.py",
+]
+
+for target in targets:
+    fd, cfile = tempfile.mkstemp(suffix=".pyc")
+    os.close(fd)
+    try:
+        py_compile.compile(target, cfile=cfile, doraise=True)
+    finally:
+        if os.path.exists(cfile):
+            os.unlink(cfile)
+PY
+
 if command -v shellcheck >/dev/null 2>&1; then
   echo
   echo "==> shellcheck"
@@ -43,6 +74,10 @@ else
   echo "==> shellcheck"
   echo "  [skip] shellcheck not installed"
 fi
+
+echo
+echo "==> comprehensive GTK theme suite"
+./scripts/test-hate-of-nature-gtk-theme.sh
 
 echo
 echo "All pre-push checks passed."

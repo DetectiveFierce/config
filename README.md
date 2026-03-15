@@ -26,6 +26,9 @@ This repository is the canonical source for your user config files.
 ├── rstudio/            -> ~/.config/rstudio/
 ├── walker/             -> ~/.config/walker/
 ├── waybar/             -> ~/.config/waybar/
+├── vicinae/
+│   ├── .config/vicinae/          -> ~/.config/vicinae/
+│   └── .local/share/vicinae/     -> ~/.local/share/vicinae/
 ├── zed/                -> ~/.config/zed/
 └── zsh/
     └── .zshrc          -> ~/.zshrc
@@ -54,6 +57,12 @@ XDG targets (`~/.config/<name>/...`):
 Home target (`~/...`):
 
 - `zsh`
+- `vicinae`
+
+Theme targets (`~/.local/share/themes/<name>/...`):
+
+- `GTK Theme` -> `Dark-Green-Jungle`
+- `Hate of Nature GTK Theme` -> `Hate-of-Nature`
 
 ## Commands
 
@@ -78,6 +87,21 @@ Home target (`~/...`):
 
 # Validate before pushing to main
 ./scripts/pre-push-checks.sh
+
+# Rebuild Hate-of-Nature from the Catppuccin Mocha base theme (auto-download fallback)
+./scripts/build-hate-of-nature-gtk-theme.sh
+
+# Run the full Hate-of-Nature build-and-validate suite
+./scripts/test-hate-of-nature-gtk-theme.sh
+
+# Audit built GTK colors against the approved Hate-of-Nature palette
+./scripts/test-hate-of-nature-gtk-theme-colors.pl
+
+# Verify app/widget selector coverage for key GTK surfaces
+./scripts/test-hate-of-nature-gtk-theme-selector-coverage.pl
+
+# Include GTK assets in the audit and print all color groups
+./scripts/test-hate-of-nature-gtk-theme-colors.pl --include-assets --max-colors 0
 ```
 
 ## First-time migration (recommended)

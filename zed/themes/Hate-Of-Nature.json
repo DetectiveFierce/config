@@ -268,6 +268,138 @@
             "color": "#a6e22e",
             "font_style": null,
             "font_weight": 500
+          },
+          "attribute.rmd_chunk": {
+            "color": "#A6E22E",
+            "font_style": null,
+            "font_weight": null,
+            "background_color": "#24370a"
+          },
+          "boolean.rmd_chunk": {
+            "color": "#AE81FF",
+            "font_style": null,
+            "font_weight": 500,
+            "background_color": "#24370a"
+          },
+          "comment.rmd_chunk": {
+            "color": "#57702f",
+            "font_style": null,
+            "font_weight": null,
+            "background_color": "#24370a"
+          },
+          "comment.doc.rmd_chunk": {
+            "color": "#485731",
+            "font_style": null,
+            "font_weight": null,
+            "background_color": "#24370a"
+          },
+          "constant.rmd_chunk": {
+            "color": "#AE81FF",
+            "font_style": null,
+            "font_weight": 600,
+            "background_color": "#24370a"
+          },
+          "function.rmd_chunk": {
+            "color": "#66d9ef",
+            "font_style": null,
+            "font_weight": 600,
+            "background_color": "#24370a"
+          },
+          "keyword.rmd_chunk": {
+            "color": "#F92672",
+            "font_style": null,
+            "font_weight": null,
+            "background_color": "#24370a"
+          },
+          "tag.rmd_chunk": {
+            "color": "#F92672",
+            "font_style": null,
+            "font_weight": null,
+            "background_color": "#24370a"
+          },
+          "number.rmd_chunk": {
+            "color": "#AE81FF",
+            "font_style": null,
+            "font_weight": 600,
+            "background_color": "#24370a"
+          },
+          "string.rmd_chunk": {
+            "color": "#E6DB74",
+            "font_style": null,
+            "font_weight": null,
+            "background_color": "#24370a"
+          },
+          "string.escape.rmd_chunk": {
+            "color": "#E6DB74",
+            "font_style": null,
+            "font_weight": null,
+            "background_color": "#24370a"
+          },
+          "string.regex.rmd_chunk": {
+            "color": "#E6DB74",
+            "font_style": null,
+            "font_weight": null,
+            "background_color": "#24370a"
+          },
+          "string.special.rmd_chunk": {
+            "color": "#E6DB74",
+            "font_style": null,
+            "font_weight": null,
+            "background_color": "#24370a"
+          },
+          "string.special.symbol.rmd_chunk": {
+            "color": "#E6DB74",
+            "font_style": null,
+            "font_weight": null,
+            "background_color": "#24370a"
+          },
+          "text.literal.rmd_chunk": {
+            "color": "#E6DB74",
+            "font_style": null,
+            "font_weight": null,
+            "background_color": "#24370a"
+          },
+          "variable.rmd_chunk": {
+            "color": "#FD971F",
+            "font_style": null,
+            "font_weight": 600,
+            "background_color": "#24370a"
+          },
+          "variable.special.rmd_chunk": {
+            "color": "#FD971F",
+            "font_style": null,
+            "font_weight": null,
+            "background_color": "#24370a"
+          },
+          "type.rmd_chunk": {
+            "color": "#a6e22e",
+            "font_style": null,
+            "font_weight": 500,
+            "background_color": "#24370a"
+          },
+          "operator.rmd_chunk": {
+            "background_color": "#24370a"
+          },
+          "punctuation.rmd_chunk": {
+            "background_color": "#24370a"
+          },
+          "error.rmd_chunk": {
+            "background_color": "#24370a"
+          },
+          "constant.builtin.rmd_chunk": {
+            "background_color": "#24370a"
+          },
+          "variable.parameter.rmd_chunk": {
+            "background_color": "#24370a"
+          },
+          "punctuation.embedded.markup.rmd_chunk": {
+            "background_color": "#24370a"
+          },
+          "embedded.rmd_chunk": {
+            "background_color": "#24370a"
+          },
+          "rmd_chunk": {
+            "background_color": "#24370a"
           }
         },
         "background.appearance": "opaque",

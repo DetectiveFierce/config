@@ -4,7 +4,7 @@ set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 XDG_PACKAGES=(alacritty foot fuzzel ghostty hypr hypr-dock kitty niri nvim rstudio walker waybar zed Antigravity Cursor)
-HOME_PACKAGES=(zsh "GTK Theme")
+HOME_PACKAGES=(zsh vicinae "GTK Theme" "Hate of Nature GTK Theme")
 
 usage() {
   cat <<'EOF'
@@ -49,6 +49,8 @@ target_for_package() {
     printf '%s\n' "$HOME/.config/$pkg"
   elif [[ "$pkg" == "GTK Theme" ]]; then
     printf '%s\n' "$HOME/.local/share/themes/Dark-Green-Jungle"
+  elif [[ "$pkg" == "Hate of Nature GTK Theme" ]]; then
+    printf '%s\n' "$HOME/.local/share/themes/Hate-of-Nature"
   else
     printf '%s\n' "$HOME"
   fi

@@ -1,0 +1,772 @@
+/* Hate-of-Nature Centralized Overrides
+ * Applied at build time to GTK3/GTK4 outputs.
+ * Focus: deep monochrome-green surfaces with consistent readable contrast.
+ */
+
+@define-color hon_bg_0 #0D1303;
+@define-color hon_bg_1 #131F00;
+@define-color hon_bg_2 #162400;
+@define-color hon_bg_3 #172304;
+@define-color hon_bg_4 #1A2D00;
+@define-color hon_surface_0 #223401;
+@define-color hon_border_0 #2E4012;
+@define-color hon_border_1 #3A5412;
+@define-color hon_text #E4F0D4;
+@define-color hon_text_soft #92B161;
+@define-color hon_text_dim #61704A;
+@define-color hon_accent_0 #A6E22E;
+@define-color hon_accent_1 #92B161;
+@define-color hon_accent_2 #86B42B;
+@define-color hon_focus #5A8A22;
+
+window,
+window.background,
+dialog,
+messagedialog,
+.background,
+viewport,
+stack,
+paned,
+scrolledwindow,
+list,
+listview,
+columnview,
+columnview > listview > row,
+iconview,
+textview,
+textview text,
+treeview.view,
+treeview.view > header > button,
+treeview.view > dnd,
+text,
+entry,
+entry > text,
+spinbutton entry,
+spinbutton > text {
+  background-image: none;
+  background-color: @hon_bg_1;
+  border-color: @hon_border_0;
+  color: @hon_text;
+  caret-color: @hon_text;
+}
+
+separator {
+  background-color: @hon_border_0;
+  color: @hon_border_0;
+}
+
+headerbar,
+.titlebar,
+.titlebar:not(headerbar),
+toolbar,
+.primary-toolbar,
+notebook > header,
+notebook > stack,
+notebook > header > tabs,
+notebook > header > tabs > tab,
+notebook > header > tabs > tab:backdrop,
+notebook > header > tabs > tab:checked {
+  background-image: linear-gradient(to bottom, @hon_bg_2, @hon_bg_3);
+  background-color: @hon_bg_2;
+  border-color: @hon_border_0;
+  color: @hon_text;
+  box-shadow: inset 0 -1px @hon_border_1;
+}
+
+headerbar .title,
+headerbar .subtitle,
+headerbar label,
+headerbar image,
+.titlebar label,
+toolbar label,
+toolbar image {
+  color: @hon_text;
+}
+
+notebook > header > tabs > tab {
+  border-color: transparent;
+  color: @hon_text_soft;
+}
+
+notebook > header > tabs > tab:hover {
+  background-image: none;
+  background-color: @hon_bg_4;
+  color: @hon_text;
+}
+
+notebook > header > tabs > tab:checked {
+  background-image: none;
+  background-color: @hon_bg_4;
+  color: @hon_text;
+  box-shadow: inset 0 -2px @hon_accent_0;
+}
+
+entry,
+entry > text,
+spinbutton entry,
+spinbutton > text,
+searchentry,
+searchbar entry {
+  background-color: @hon_bg_0;
+  color: @hon_text;
+  border: 1px solid @hon_border_1;
+  box-shadow: inset 0 1px rgba(13, 19, 3, 0.92);
+}
+
+entry:focus,
+entry > text:focus,
+spinbutton entry:focus,
+spinbutton > text:focus,
+searchentry:focus,
+searchbar entry:focus {
+  border-color: @hon_focus;
+  box-shadow: inset 0 1px rgba(13, 19, 3, 0.92), 0 0 0 1px rgba(90, 138, 34, 0.55);
+}
+
+button,
+button.flat,
+button.image-button,
+menubutton > button,
+splitbutton > button,
+spinbutton > button,
+combobox > box > button.combo,
+filechooserbutton > button {
+  background-image: none;
+  background-color: @hon_bg_3;
+  color: @hon_text_soft;
+  border-color: @hon_border_1;
+  box-shadow: none;
+}
+
+button:hover,
+button.flat:hover,
+button.image-button:hover,
+menubutton > button:hover,
+splitbutton > button:hover,
+spinbutton > button:hover,
+combobox > box > button.combo:hover,
+filechooserbutton > button:hover {
+  background-color: @hon_bg_4;
+  color: @hon_text;
+}
+
+button:active,
+button:checked,
+button.flat:active,
+button.flat:checked,
+button.image-button:active,
+button.image-button:checked,
+menubutton > button:active,
+menubutton > button:checked,
+splitbutton > button:active,
+splitbutton > button:checked {
+  background-color: @hon_surface_0;
+  color: @hon_text;
+  border-color: @hon_accent_1;
+  box-shadow: inset 0 -2px @hon_accent_0;
+}
+
+button:disabled,
+button:backdrop:disabled,
+label:disabled,
+image:disabled {
+  color: @hon_text_dim;
+}
+
+treeview.view:selected,
+treeview.view row:selected,
+treeview.view:selected:focus,
+list row:selected,
+listview row:selected,
+iconview:selected,
+row:selected,
+selection,
+*:selected {
+  background-color: @hon_accent_2;
+  color: @hon_text;
+}
+
+treeview.view:hover,
+treeview.view row:hover,
+list row:hover,
+listview row:hover,
+iconview:hover,
+row:hover {
+  background-color: @hon_bg_4;
+}
+
+.sidebar,
+.sidebar:backdrop,
+stacksidebar,
+placessidebar,
+placessidebar list,
+placessidebar row,
+placessidebar row.sidebar-row,
+placessidebar.sidebar,
+.nemo-window .sidebar,
+.nemo-window .places-treeview,
+.caja-side-pane,
+.nautilus-window .sidebar-pane,
+#NautilusFileChooser .sidebar-pane {
+  background-image: none;
+  background-color: @hon_bg_3;
+  border-color: @hon_border_0;
+  color: @hon_text_soft;
+}
+
+.sidebar row,
+placessidebar row,
+.nautilus-window .sidebar-pane row,
+#NautilusFileChooser .sidebar-pane row {
+  color: @hon_text_soft;
+}
+
+.sidebar row:selected,
+placessidebar row:selected,
+.nautilus-window .sidebar-pane row:selected,
+#NautilusFileChooser .sidebar-pane row:selected {
+  background-color: @hon_bg_4;
+  box-shadow: inset 2px 0 @hon_accent_0;
+  color: @hon_text;
+}
+
+/* Thunar tonal map:
+ * top/title darkest, toolbar medium, sidebar dark, content lighter.
+ * selection is semi-transparent green to preserve depth below it.
+ */
+@define-color hon_thunar_top_0 #0D1303;
+@define-color hon_thunar_top_1 #131F00;
+@define-color hon_thunar_toolbar_0 #172304;
+@define-color hon_thunar_toolbar_1 #1A2D00;
+@define-color hon_thunar_sidebar_bg #131F00;
+@define-color hon_thunar_sidebar_hover #172304;
+@define-color hon_thunar_content_bg #223401;
+@define-color hon_thunar_content_hover #2E4012;
+@define-color hon_thunar_header_bg #1A2D00;
+@define-color hon_thunar_status_bg #172304;
+@define-color hon_thunar_divider #3A5412;
+@define-color hon_thunar_text_main #F8F8F2;
+@define-color hon_thunar_text_dim #92B161;
+@define-color hon_thunar_selection_fill rgba(146, 177, 97, 0.24);
+@define-color hon_thunar_selection_edge rgba(166, 226, 46, 0.82);
+@define-color hon_thunar_selection_hover rgba(146, 177, 97, 0.14);
+
+window.thunar,
+.thunar {
+  background-image: none;
+  background-color: @hon_thunar_content_bg;
+  color: @hon_thunar_text_main;
+}
+
+window.thunar .titlebar,
+window.thunar .titlebar:not(headerbar),
+window.thunar headerbar,
+window.thunar menubar,
+window.thunar .menubar,
+.thunar .titlebar,
+.thunar headerbar {
+  background-image: linear-gradient(to bottom, @hon_thunar_top_0, @hon_thunar_top_1);
+  background-color: @hon_thunar_top_0;
+  border-color: @hon_thunar_divider;
+  color: @hon_thunar_text_main;
+}
+
+window.thunar toolbar,
+.thunar toolbar,
+window.thunar toolbar#location-toolbar,
+window.thunar toolbar#location-toolbar > toolitem,
+window.thunar toolbar#location-toolbar > toolitem > widget,
+window.thunar toolbar#location-toolbar > toolitem > widget > widget.linked.path-bar,
+window.thunar .location-bar {
+  background-image: linear-gradient(to bottom, @hon_thunar_toolbar_0, @hon_thunar_toolbar_1);
+  background-color: @hon_thunar_toolbar_0;
+  border-color: @hon_thunar_divider;
+  color: @hon_thunar_text_main;
+  box-shadow: inset 0 -1px @hon_thunar_divider;
+}
+
+window.thunar toolbar#location-toolbar entry,
+window.thunar toolbar#location-toolbar entry text {
+  background-image: none;
+  background-color: @hon_thunar_top_0;
+  border-color: @hon_thunar_divider;
+  color: @hon_thunar_text_main;
+}
+
+window.thunar toolbar .path-bar-button,
+window.thunar toolbar#location-toolbar > toolitem > widget > widget.linked.path-bar > button.path-bar-button,
+window.thunar toolbar#location-toolbar > toolitem > widget > widget.linked.path-bar > button.toggle.path-bar-button {
+  background-image: none;
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: @hon_thunar_text_dim;
+}
+
+window.thunar toolbar .path-bar-button:hover,
+window.thunar toolbar#location-toolbar > toolitem > widget > widget.linked.path-bar > button.path-bar-button:hover,
+window.thunar toolbar#location-toolbar > toolitem > widget > widget.linked.path-bar > button.toggle.path-bar-button:hover {
+  background-color: @hon_thunar_selection_hover;
+  border-color: @hon_thunar_divider;
+  color: @hon_thunar_text_main;
+}
+
+window.thunar toolbar .path-bar-button:checked,
+window.thunar toolbar#location-toolbar > toolitem > widget > widget.linked.path-bar > button.path-bar-button:checked,
+window.thunar toolbar#location-toolbar > toolitem > widget > widget.linked.path-bar > button.toggle.path-bar-button:checked {
+  background-image: none;
+  background-color: @hon_thunar_selection_fill;
+  border-color: @hon_thunar_selection_edge;
+  color: @hon_thunar_text_main;
+  box-shadow: inset 0 -1px @hon_thunar_selection_edge;
+}
+
+/* Hard split of left/right panes so the sidebar cannot inherit content tone. */
+window.thunar paned > scrolledwindow:first-child,
+window.thunar paned > scrolledwindow:first-child treeview.view,
+window.thunar paned > scrolledwindow:first-child placessidebar,
+window.thunar paned > scrolledwindow:first-child placessidebar list {
+  background-image: none;
+  background-color: @hon_thunar_sidebar_bg;
+  border-color: @hon_thunar_divider;
+  color: @hon_thunar_text_dim;
+}
+
+window.thunar paned > scrolledwindow:last-child,
+window.thunar paned > scrolledwindow:last-child treeview.view,
+window.thunar paned > scrolledwindow:last-child .view,
+window.thunar paned > scrolledwindow:last-child iconview,
+window.thunar .standard-view {
+  background-image: none;
+  background-color: @hon_thunar_content_bg;
+  border-color: @hon_thunar_divider;
+  color: @hon_thunar_text_main;
+}
+
+window.thunar paned > separator {
+  background-image: none;
+  background-color: @hon_thunar_divider;
+  min-width: 1px;
+}
+
+window.thunar paned > scrolledwindow:last-child treeview.view row {
+  background-image: none;
+  background-color: transparent;
+  color: @hon_thunar_text_main;
+}
+
+window.thunar paned > scrolledwindow:last-child treeview.view row:hover {
+  background-color: @hon_thunar_selection_hover;
+  color: @hon_thunar_text_main;
+}
+
+window.thunar paned > scrolledwindow:last-child treeview.view row:selected,
+window.thunar paned > scrolledwindow:last-child treeview.view:selected:focus {
+  background-color: @hon_thunar_selection_fill;
+  color: @hon_thunar_text_main;
+  box-shadow: inset 2px 0 @hon_thunar_selection_edge;
+}
+
+window.thunar .shortcuts-pane treeview.view row,
+window.thunar scrolledwindow.sidebar treeview.view row,
+window.thunar placessidebar row.sidebar-row,
+window.thunar paned > scrolledwindow:first-child treeview.view row {
+  background-image: none;
+  background-color: transparent;
+  color: @hon_thunar_text_dim;
+}
+
+window.thunar .shortcuts-pane treeview.view row:hover,
+window.thunar scrolledwindow.sidebar treeview.view row:hover,
+window.thunar placessidebar row.sidebar-row:hover,
+window.thunar paned > scrolledwindow:first-child treeview.view row:hover {
+  background-image: none;
+  background-color: rgba(58, 84, 18, 0.42);
+  color: @hon_thunar_text_main;
+}
+
+window.thunar .shortcuts-pane treeview.view row:selected,
+window.thunar scrolledwindow.sidebar treeview.view row:selected,
+window.thunar placessidebar row.sidebar-row:selected,
+window.thunar placessidebar row.sidebar-row:selected:hover,
+window.thunar placessidebar row.sidebar-row:selected:backdrop,
+window.thunar paned > scrolledwindow:first-child treeview.view row:selected {
+  background-image: none;
+  background-color: @hon_thunar_selection_fill;
+  box-shadow: inset 2px 0 @hon_thunar_selection_edge;
+  color: @hon_thunar_text_main;
+}
+
+window.thunar placessidebar row.sidebar-row .sidebar-icon {
+  color: @hon_thunar_text_dim;
+}
+
+window.thunar placessidebar row.sidebar-row:selected .sidebar-icon,
+window.thunar placessidebar row.sidebar-row:hover .sidebar-icon {
+  color: @hon_thunar_text_main;
+}
+
+window.thunar paned > scrolledwindow:last-child treeview.view > header > button,
+window.thunar treeview.view > header > button {
+  background-image: none;
+  background-color: @hon_thunar_header_bg;
+  color: @hon_thunar_text_dim;
+  border-color: @hon_thunar_divider;
+  box-shadow: inset 0 -1px @hon_thunar_divider;
+}
+
+window.thunar paned > scrolledwindow:last-child treeview.view > header > button:hover,
+window.thunar treeview.view > header > button:hover {
+  background-color: @hon_thunar_selection_hover;
+  color: @hon_thunar_text_main;
+}
+
+window.thunar statusbar,
+window.thunar .statusbar {
+  background-image: none;
+  background-color: @hon_thunar_status_bg;
+  color: @hon_thunar_text_dim;
+  border-top: 1px solid @hon_thunar_divider;
+}
+
+/* Fallback path for Thunar/XFCE builds where .thunar/window.thunar
+ * style classes are absent. This enforces pane contrast by structure.
+ */
+paned > scrolledwindow.sidebar,
+paned scrolledwindow.sidebar,
+paned > *:first-child scrolledwindow,
+paned > scrolledwindow.sidebar:backdrop,
+paned scrolledwindow.sidebar:backdrop,
+paned > *:first-child scrolledwindow:backdrop,
+paned > scrolledwindow.sidebar treeview.view,
+paned scrolledwindow.sidebar treeview.view,
+paned > *:first-child scrolledwindow treeview.view,
+paned > scrolledwindow.sidebar treeview.view:backdrop,
+paned scrolledwindow.sidebar treeview.view:backdrop,
+paned > *:first-child scrolledwindow treeview.view:backdrop,
+paned > scrolledwindow.sidebar placessidebar,
+paned scrolledwindow.sidebar placessidebar,
+paned > *:first-child scrolledwindow placessidebar,
+paned > scrolledwindow.sidebar placessidebar:backdrop,
+paned scrolledwindow.sidebar placessidebar:backdrop,
+paned > *:first-child scrolledwindow placessidebar:backdrop,
+paned > scrolledwindow.sidebar placessidebar list,
+paned scrolledwindow.sidebar placessidebar list,
+paned > *:first-child scrolledwindow placessidebar list,
+paned > scrolledwindow.sidebar placessidebar list:backdrop {
+  background-image: none;
+  background-color: @hon_thunar_sidebar_bg;
+  border-color: @hon_thunar_divider;
+  color: @hon_thunar_text_dim;
+}
+
+paned > scrolledwindow:not(.sidebar),
+paned scrolledwindow:not(.sidebar),
+paned > *:last-child scrolledwindow,
+paned > scrolledwindow:not(.sidebar):backdrop,
+paned scrolledwindow:not(.sidebar):backdrop,
+paned > *:last-child scrolledwindow:backdrop,
+paned > scrolledwindow:not(.sidebar) treeview.view,
+paned scrolledwindow:not(.sidebar) treeview.view,
+paned > *:last-child scrolledwindow treeview.view,
+paned > scrolledwindow:not(.sidebar) treeview.view:backdrop,
+paned scrolledwindow:not(.sidebar) treeview.view:backdrop,
+paned > *:last-child scrolledwindow treeview.view:backdrop,
+paned > scrolledwindow:not(.sidebar) .view,
+paned scrolledwindow:not(.sidebar) .view,
+paned > *:last-child scrolledwindow .view,
+paned > scrolledwindow:not(.sidebar) .view:backdrop,
+paned scrolledwindow:not(.sidebar) .view:backdrop,
+paned > *:last-child scrolledwindow .view:backdrop,
+paned > scrolledwindow:not(.sidebar) iconview,
+paned scrolledwindow:not(.sidebar) iconview,
+paned > *:last-child scrolledwindow iconview,
+paned > scrolledwindow:not(.sidebar) iconview:backdrop {
+  background-image: none;
+  background-color: @hon_thunar_content_bg;
+  border-color: @hon_thunar_divider;
+  color: @hon_thunar_text_main;
+}
+
+paned > scrolledwindow.sidebar treeview.view row,
+paned scrolledwindow.sidebar treeview.view row,
+paned > *:first-child scrolledwindow treeview.view row,
+paned > scrolledwindow.sidebar placessidebar row.sidebar-row {
+  background-image: none;
+  background-color: transparent;
+  color: @hon_thunar_text_dim;
+}
+
+paned > scrolledwindow.sidebar treeview.view row:hover,
+paned scrolledwindow.sidebar treeview.view row:hover,
+paned > *:first-child scrolledwindow treeview.view row:hover,
+paned > scrolledwindow.sidebar placessidebar row.sidebar-row:hover {
+  background-image: none;
+  background-color: rgba(58, 84, 18, 0.42);
+  color: @hon_thunar_text_main;
+}
+
+paned > scrolledwindow.sidebar treeview.view row:selected,
+paned scrolledwindow.sidebar treeview.view row:selected,
+paned > *:first-child scrolledwindow treeview.view row:selected,
+paned > scrolledwindow.sidebar treeview.view row:selected:backdrop,
+paned scrolledwindow.sidebar treeview.view row:selected:backdrop,
+paned > *:first-child scrolledwindow treeview.view row:selected:backdrop,
+paned > scrolledwindow.sidebar placessidebar row.sidebar-row:selected,
+paned > scrolledwindow.sidebar placessidebar row.sidebar-row:selected:hover,
+paned > scrolledwindow.sidebar placessidebar row.sidebar-row:selected:backdrop {
+  background-image: none;
+  background-color: @hon_thunar_selection_fill;
+  box-shadow: inset 2px 0 @hon_thunar_selection_edge;
+  color: @hon_thunar_text_main;
+}
+
+paned > scrolledwindow:not(.sidebar) treeview.view row,
+paned scrolledwindow:not(.sidebar) treeview.view row,
+paned > *:last-child scrolledwindow treeview.view row,
+paned > scrolledwindow:not(.sidebar) iconview,
+paned scrolledwindow:not(.sidebar) iconview,
+paned > *:last-child scrolledwindow iconview,
+paned > scrolledwindow:not(.sidebar) listview row {
+  color: @hon_thunar_text_main;
+}
+
+paned > scrolledwindow:not(.sidebar) treeview.view row:hover,
+paned scrolledwindow:not(.sidebar) treeview.view row:hover,
+paned > *:last-child scrolledwindow treeview.view row:hover,
+paned > scrolledwindow:not(.sidebar) listview row:hover {
+  background-color: @hon_thunar_selection_hover;
+  color: @hon_thunar_text_main;
+}
+
+paned > scrolledwindow:not(.sidebar) treeview.view row:selected,
+paned scrolledwindow:not(.sidebar) treeview.view row:selected,
+paned > *:last-child scrolledwindow treeview.view row:selected,
+paned > scrolledwindow:not(.sidebar) treeview.view row:selected:backdrop,
+paned scrolledwindow:not(.sidebar) treeview.view row:selected:backdrop,
+paned > *:last-child scrolledwindow treeview.view row:selected:backdrop,
+paned > scrolledwindow:not(.sidebar) listview row:selected {
+  background-color: @hon_thunar_selection_fill;
+  box-shadow: inset 2px 0 @hon_thunar_selection_edge;
+  color: @hon_thunar_text_main;
+}
+
+/* Info and help bars */
+infobar,
+.info,
+.warning,
+.question,
+.error,
+banner revealer widget,
+.dialog-action-area,
+dialog .dialog-action-box {
+  background-image: none;
+  background-color: @hon_bg_4;
+  border-color: @hon_border_1;
+  color: @hon_text;
+  box-shadow: none;
+}
+
+infobar label,
+infobar .label,
+.info .label,
+.warning .label,
+.question .label,
+.error .label,
+banner revealer widget label {
+  color: @hon_text;
+}
+
+infobar button,
+.info button,
+.warning button,
+.question button,
+.error button,
+banner revealer widget button {
+  background-image: none;
+  background-color: @hon_bg_2;
+  border-color: @hon_border_1;
+  color: @hon_text;
+}
+
+infobar button:hover,
+.info button:hover,
+.warning button:hover,
+.question button:hover,
+.error button:hover,
+banner revealer widget button:hover {
+  background-color: @hon_surface_0;
+}
+
+/* Notifications, popups, overlays */
+#XfceNotifyWindow,
+#XfceNotifyWindow box,
+#XfceNotifyWindow label,
+#XfceNotifyWindow image,
+.app-notification,
+.app-notification.frame,
+.notification,
+.notification-popup,
+.osd,
+.osd .scale-popup,
+.osd popover.background > arrow,
+.osd popover.background > contents,
+popover.background.osd,
+popover.background.osd > arrow,
+popover.background.osd > contents {
+  background-image: none;
+  background-color: @hon_bg_2;
+  border-color: @hon_border_1;
+  color: @hon_text;
+  box-shadow: 0 6px 18px rgba(13, 19, 3, 0.85);
+}
+
+#XfceNotifyWindow button,
+.app-notification button,
+.osd button,
+popover.background.osd button {
+  background-image: none;
+  background-color: @hon_bg_3;
+  border-color: @hon_border_1;
+  color: @hon_text_soft;
+}
+
+#XfceNotifyWindow button:hover,
+.app-notification button:hover,
+.osd button:hover,
+popover.background.osd button:hover {
+  background-color: @hon_bg_4;
+  color: @hon_text;
+}
+
+#XfceNotifyWindow button:active,
+.app-notification button:active,
+.osd button:active,
+popover.background.osd button:active {
+  background-color: @hon_surface_0;
+  border-color: @hon_accent_1;
+  color: @hon_text;
+}
+
+/* Menus and popovers */
+menubar,
+.menubar,
+menu,
+.menu,
+.context-menu,
+popover,
+popover.background,
+popover contents,
+.popover_bg,
+modelbutton.flat,
+.menuitem.button.flat {
+  background-image: none;
+  background-color: @hon_bg_2;
+  border-color: @hon_border_0;
+  color: @hon_text;
+}
+
+menubar > item,
+.menubar > item,
+menu menuitem,
+.menu menuitem,
+.context-menu menuitem,
+modelbutton.flat,
+.menuitem.button.flat {
+  color: @hon_text_soft;
+}
+
+menubar > item:hover,
+.menubar > item:hover,
+menu menuitem:hover,
+.menu menuitem:hover,
+.context-menu menuitem:hover,
+modelbutton.flat:hover,
+.menuitem.button.flat:hover {
+  background-color: @hon_bg_4;
+  color: @hon_text;
+}
+
+menu menuitem:checked,
+.menu menuitem:checked,
+.context-menu menuitem:checked,
+modelbutton.flat:checked,
+.menuitem.button.flat:checked {
+  background-color: @hon_surface_0;
+  color: @hon_text;
+}
+
+tooltip,
+tooltip.background,
+tooltip box {
+  background-image: none;
+  background-color: @hon_surface_0;
+  border: 1px solid @hon_border_1;
+  color: @hon_text;
+}
+
+/* File chooser / desktop portal coverage */
+filechooser,
+filechooser dialog,
+filechooser paned,
+filechooser stack,
+filechooser scrolledwindow,
+filechooser list,
+filechooser listview,
+filechooser treeview.view,
+filechooser .dialog-action-box,
+filechooser #pathbarbox,
+filechooser .sidebar,
+filechooser placessidebar,
+filechooser .places-sidebar,
+filechooser .view {
+  background-image: none;
+  background-color: @hon_bg_1;
+  border-color: @hon_border_0;
+  color: @hon_text;
+}
+
+filechooser .sidebar,
+filechooser placessidebar,
+filechooser .places-sidebar,
+filechooser placessidebar row,
+filechooser .sidebar row {
+  background-color: @hon_bg_3;
+  color: @hon_text_soft;
+}
+
+filechooser placessidebar row:selected,
+filechooser .sidebar row:selected,
+filechooser .places-sidebar row:selected {
+  background-color: @hon_bg_4;
+  color: @hon_text;
+  box-shadow: inset 2px 0 @hon_accent_0;
+}
+
+#NautilusFileChooser,
+#NautilusFileChooser .sidebar-pane,
+#NautilusFileChooser .content-pane,
+#NautilusFileChooser .sidebar-pane .top-bar,
+#NautilusFileChooser .sidebar-pane .top-bar headerbar,
+#NautilusFileChooser .content-pane .top-bar,
+#NautilusFileChooser .content-pane .top-bar headerbar,
+.nautilus-window .sidebar-pane .top-bar,
+.nautilus-window .sidebar-pane .top-bar headerbar,
+.nautilus-window .content-pane .top-bar,
+.nautilus-window .content-pane .top-bar headerbar {
+  background-image: none;
+  background-color: @hon_bg_2;
+  border-color: @hon_border_0;
+  color: @hon_text;
+}
+
+window.xdg-desktop-portal-gtk,
+dialog.xdg-desktop-portal-gtk,
+.xdg-desktop-portal-gtk,
+window.filechooser.csd,
+dialog.filechooser {
+  background-image: none;
+  background-color: @hon_bg_1;
+  color: @hon_text;
+  border-color: @hon_border_0;
+}

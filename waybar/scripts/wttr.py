@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 
 import json
-import requests
+import os
 from datetime import datetime
+from urllib.parse import quote
+
+import requests
 
 WEATHER_CODES = {
     '113': '☀️',
@@ -55,10 +58,21 @@ WEATHER_CODES = {
     '395': '❄️'
 }
 
-data = {}
+DEFAULT_TEXT = "N/A"
+DEFAULT_TOOLTIP = "Weather unavailable"
 
 
-weather = requests.get("https://wttr.in/Springfield, Manitoba?format=j1").json()
+def fetch_weather():
+    location = os.environ.get("WTTR_LOCATION", "").strip()
+    target = quote(location) if location else ""
+    url = f"https://wttr.in/{target}?format=j1"
+    response = requests.get(
+        url,
+        headers={"User-Agent": "waybar-wttr/1.0"},
+        timeout=10,
+    )
+    response.raise_for_status()
+    return response.json()
 
 
 def format_time(time):
@@ -66,7 +80,7 @@ def format_time(time):
 
 
 def format_temp(temp):
-    return (hour['FeelsLikeC']+"°").ljust(3)
+    return f"{temp}°".ljust(3)
 
 
 def format_chances(hour):
@@ -88,28 +102,51 @@ def format_chances(hour):
     return ", ".join(conditions)
 
 
-data['text'] = WEATHER_CODES[weather['current_condition'][0]['weatherCode']] + \
-    " " + weather['current_condition'][0]['FeelsLikeC']+ "°"
-#data['text'] = weather['current_condition'][0]['FeelsLikeC']+"°"
+def fallback_payload():
+    return {"text": DEFAULT_TEXT, "tooltip": DEFAULT_TOOLTIP}
 
-data['tooltip'] = f"<b>{weather['current_condition'][0]['weatherDesc'][0]['value']} {weather['current_condition'][0]['temp_C']}°</b>\n"
-data['tooltip'] += f"Feels like: {weather['current_condition'][0]['FeelsLikeC']}°\n"
-data['tooltip'] += f"Wind: {weather['current_condition'][0]['windspeedKmph']}Km/h\n"
-data['tooltip'] += f"Humidity: {weather['current_condition'][0]['humidity']}%\n"
-for i, day in enumerate(weather['weather']):
-    data['tooltip'] += f"\n<b>"
-    if i == 0:
-        data['tooltip'] += "Today, "
-    if i == 1:
-        data['tooltip'] += "Tomorrow, "
-    data['tooltip'] += f"{day['date']}</b>\n"
-    data['tooltip'] += f"⬆️ {day['maxtempC']}° ⬇️ {day['mintempC']}° "
-    data['tooltip'] += f" {day['astronomy'][0]['sunrise']}  {day['astronomy'][0]['sunset']}\n"
-    for hour in day['hourly']:
+
+def main():
+    try:
+        weather = fetch_weather()
+        current = weather["current_condition"][0]
+    except Exception:
+        print(json.dumps(fallback_payload()))
+        return
+
+    data = {}
+    icon = WEATHER_CODES.get(current.get("weatherCode", ""), "☁️")
+    feels_like = current.get("FeelsLikeF") or current.get("FeelsLikeC") or DEFAULT_TEXT
+    current_temp = current.get("temp_F") or current.get("temp_C") or DEFAULT_TEXT
+
+    data["text"] = f"{icon} {feels_like}°"
+    data["tooltip"] = (
+        f"<b>{current['weatherDesc'][0]['value']} {current_temp}°</b>\n"
+        f"Feels like: {feels_like}°\n"
+        f"Wind: {current.get('windspeedKmph', DEFAULT_TEXT)}Km/h\n"
+        f"Humidity: {current.get('humidity', DEFAULT_TEXT)}%\n"
+    )
+
+    for i, day in enumerate(weather.get("weather", [])):
+        data["tooltip"] += "\n<b>"
         if i == 0:
-            if int(format_time(hour['time'])) < datetime.now().hour-2:
+            data["tooltip"] += "Today, "
+        if i == 1:
+            data["tooltip"] += "Tomorrow, "
+        data["tooltip"] += f"{day['date']}</b>\n"
+        data["tooltip"] += f"⬆️ {day['maxtempC']}° ⬇️ {day['mintempC']}° "
+        data["tooltip"] += f" {day['astronomy'][0]['sunrise']}  {day['astronomy'][0]['sunset']}\n"
+        for hour in day["hourly"]:
+            if i == 0 and int(format_time(hour["time"])) < datetime.now().hour - 2:
                 continue
-        data['tooltip'] += f"{format_time(hour['time'])} {WEATHER_CODES[hour['weatherCode']]} {format_temp(hour['FeelsLikeC'])} {hour['weatherDesc'][0]['value']}, {format_chances(hour)}\n"
+            icon = WEATHER_CODES.get(hour.get("weatherCode", ""), "☁️")
+            data["tooltip"] += (
+                f"{format_time(hour['time'])} {icon} {format_temp(hour['FeelsLikeC'])} "
+                f"{hour['weatherDesc'][0]['value']}, {format_chances(hour)}\n"
+            )
+
+    print(json.dumps(data))
 
 
-print(json.dumps(data))
+if __name__ == "__main__":
+    main()
