@@ -4,6 +4,11 @@ set -u
 # Hyprland sessions can miss /usr/sbin on PATH, where some packaged binaries live.
 PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:${PATH:-}"
 
+# Only run the bar for Hyprland sessions.
+if [[ -z "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]] && [[ "${XDG_CURRENT_DESKTOP:-}" != *Hyprland* ]]; then
+  exit 0
+fi
+
 lockfile="${XDG_RUNTIME_DIR:-/tmp}/waybar-supervisor.lock"
 restart_delay_seconds=1
 stop_requested=0

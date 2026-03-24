@@ -1,0 +1,11 @@
+{
+  "id": "memUsageGb",
+  "name": "Memory Usage GB",
+  "description": "Shows used system memory in gigabytes in DankBar",
+  "version": "1.0.0",
+  "author": "DetectiveFierce",
+  "type": "widget",
+  "capabilities": ["dankbar-widget", "monitoring"],
+  "component": "./MemUsageGbWidget.qml",
+  "icon": "developer_board"
+}

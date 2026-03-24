@@ -3,7 +3,7 @@
 set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-XDG_PACKAGES=(alacritty foot fuzzel ghostty hypr hypr-dock kitty niri nvim rstudio walker waybar zed Antigravity Cursor)
+XDG_PACKAGES=(alacritty foot fuzzel ghostty hypr hypr-dock kitty niri nvim rstudio walker waybar zed Antigravity Cursor DankMaterialShell)
 HOME_PACKAGES=(zsh vicinae "GTK Theme" "Hate of Nature GTK Theme")
 
 usage() {

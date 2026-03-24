@@ -16,17 +16,23 @@
 
 `hypr/hyprland.conf` loads this by default:
 
-`source = /home/shared-psychosis/.config/hypr/profiles/desktop.conf`
+`source = $HOME/.config/hypr/profiles/laptop.conf`
 
 To switch to laptop mode, replace with:
 
-`source = /home/shared-psychosis/.config/hypr/profiles/laptop.conf`
+`source = $HOME/.config/hypr/profiles/laptop.conf`
+
+To switch to desktop mode, replace with:
+
+`source = $HOME/.config/hypr/profiles/desktop.conf`
 
 then reload:
 
 ```bash
 hyprctl reload
 ```
+
+For matching this desktop monitor topology in Niri, see `niri/README.md`.
 
 ## Compatibility
 

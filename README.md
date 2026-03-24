@@ -15,6 +15,7 @@ This repository is the canonical source for your user config files.
 ├── alacritty/          -> ~/.config/alacritty/
 ├── Antigravity/        -> ~/.config/Antigravity/
 ├── Cursor/             -> ~/.config/Cursor/
+├── DankMaterialShell/  -> ~/.config/DankMaterialShell/
 ├── foot/               -> ~/.config/foot/
 ├── fuzzel/             -> ~/.config/fuzzel/
 ├── ghostty/            -> ~/.config/ghostty/
@@ -41,6 +42,7 @@ XDG targets (`~/.config/<name>/...`):
 - `alacritty`
 - `Antigravity`
 - `Cursor`
+- `DankMaterialShell`
 - `foot`
 - `fuzzel`
 - `ghostty`
@@ -132,3 +134,4 @@ These still work, but now delegate to `./dotfiles`:
 - `./dotfiles apply --adopt` is available if you explicitly want Stow to adopt target files into the repo.
 - Hypr monitor profiles live in `hypr/profiles/` and are sourced from `hypr/hyprland.conf`.
 - Hypr directory layout is documented in `hypr/README.md`.
+- Niri + DMS setup and Hyprland monitor-parity instructions are documented in `niri/README.md`.
