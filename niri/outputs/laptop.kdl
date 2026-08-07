@@ -1,0 +1,6 @@
+// Laptop panel on DetectiveFiercePHD.
+// Confirm the connector name and available modes with `niri msg outputs`.
+output "eDP-1" {
+    scale 2
+    transform "normal"
+}
