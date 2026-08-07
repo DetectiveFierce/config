@@ -382,29 +382,7 @@ binds {
     // For example, this is a standard bind to toggle the screen reader (orca).
     Super+Alt+S allow-when-locked=true hotkey-overlay-title=null { spawn-sh "pkill orca || exec orca"; }
 
-    // Example volume keys mappings for PipeWire & WirePlumber.
-    // The allow-when-locked=true property makes them work even when the session is locked.
-    // Using spawn-sh allows to pass multiple arguments together with the command.
-    // "-l 1.0" limits the volume to 100%.
-    XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ -l 1.0"; }
-    XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"; }
-    XF86AudioMute        allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
-    XF86AudioMicMute     allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
-
-    // Example media keys mapping using playerctl.
-    // This will work with any MPRIS-enabled media player.
-    XF86AudioPlay        allow-when-locked=true { spawn-sh "playerctl play-pause"; }
-    XF86AudioStop        allow-when-locked=true { spawn-sh "playerctl stop"; }
-    XF86AudioPrev        allow-when-locked=true { spawn-sh "playerctl previous"; }
-    XF86AudioNext        allow-when-locked=true { spawn-sh "playerctl next"; }
-
-    // Example brightness key mappings for brightnessctl.
-    // You can use regular spawn with multiple arguments too (to avoid going through "sh"),
-    // but you need to manually put each argument in separate "" quotes.
-    XF86MonBrightnessUp allow-when-locked=true { spawn-sh "~/.config/hypr/scripts/brightness.sh up"; }
-    XF86MonBrightnessDown allow-when-locked=true { spawn-sh "~/.config/hypr/scripts/brightness.sh down"; }
-    F3 allow-when-locked=true { spawn-sh "~/.config/hypr/scripts/brightness.sh up"; }
-    F2 allow-when-locked=true { spawn-sh "~/.config/hypr/scripts/brightness.sh down"; }
+    // Hardware and bare function-key bindings are loaded from machine.kdl.
 
     // Open/close the Overview: a zoomed-out view of workspaces and windows.
     // You can also move the mouse into the top-left hot corner,
@@ -651,7 +629,6 @@ binds {
     Super+R { spawn-sh "foot --app-id=float-term --config=$HOME/.config/foot/float-term.ini -e zsh -lc '~/.config/hypr/scripts/recent-projects-fzf editor'"; }
     Super+Shift+R { spawn-sh "foot --app-id=float-term --config=$HOME/.config/foot/float-term.ini -e $SHELL -lc 'source ~/.zshrc && ~/.config/hypr/scripts/recent-projects-fzf fm'"; }
     Super+Tab { focus-workspace "terminal"; }
-    F4 { focus-workspace "htop"; }
     Super+Ctrl+S { focus-workspace "htop"; }
     Super+Ctrl+Shift+S { move-column-to-workspace "htop"; }
     Super+Alt+Slash { focus-workspace "cheatsheet"; }
@@ -666,6 +643,10 @@ include "dms/cursor.kdl"
 include optional=true "basicsettings.kdl" // Generated locally by niri-settings
 
 include optional=true "keybinds.kdl" // Generated locally by niri-settings
+
+// Local, untracked selector for machine-profiles/{desktop,laptop}.kdl. Load it
+// after niri-settings output so the selected machine owns hardware keys.
+include optional=true "machine.kdl"
 
 // Shared workflow overrides come last so local niri-settings output cannot
 // change the window-management modifier or column-centering behavior.

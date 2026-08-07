@@ -46,7 +46,7 @@ Reload Niri config after edits:
 niri msg action load-config-file
 ```
 
-## 3) Device-specific monitor layouts
+## 3) Device-specific monitor layouts and controls
 
 Shared Niri settings live in `config.kdl`. Monitor layouts are split by device:
 
@@ -57,6 +57,27 @@ Both files are included by `config.kdl`. Niri ignores definitions for outputs
 that are not connected, so pulling on either device does not require changing a
 profile selector or modifying a tracked file. If a connector name changes, run
 `niri msg outputs` on that device and update only its output file.
+
+Hardware and bare function-key bindings are machine-specific:
+
+- `machine-profiles/desktop.kdl` uses DDC/CI to synchronize external displays.
+- `machine-profiles/laptop.kdl` uses the laptop's internal backlight.
+
+Select one profile in the untracked `machine.kdl` file. It is stowed normally,
+but ignored by Git so each machine retains its own selection:
+
+```bash
+# Desktop
+printf 'include "machine-profiles/desktop.kdl"\n' > niri/machine.kdl
+
+# Laptop
+printf 'include "machine-profiles/laptop.kdl"\n' > niri/machine.kdl
+```
+
+Hyprland keeps the corresponding controls directly in
+`profiles/desktop.conf` and `profiles/laptop.conf`. Its untracked
+`machine.conf` selector chooses the monitor profile and hardware bindings
+together.
 
 ### Desktop layout details
 

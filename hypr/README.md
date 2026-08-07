@@ -7,26 +7,31 @@
 - `hypr/hyprland.conf`: main Hyprland config.
 - `hypr/hyprlock.conf`, `hypr/hyprpaper.conf`: lock + wallpaper daemon config.
 - `hypr/scripts/`: launchers and helper scripts used by keybinds/autostart.
-- `hypr/profiles/`: monitor/workspace profile snippets.
+- `hypr/profiles/`: machine-specific monitor, workspace, and hardware-key snippets.
 - `hypr/assets/`: wallpapers and image assets.
 - `hypr/bin/`: vendored helper binaries (currently `hypr-alttab`).
 - `hypr/archive/`: historical backups/reference configs.
 
 ## Monitor Profiles
 
-`hypr/hyprland.conf` loads this by default:
+`hypr/hyprland.conf` loads the local, untracked selector:
+
+`source = $HOME/.config/hypr/machine.conf`
+
+Select laptop mode in `machine.conf` with:
 
 `source = $HOME/.config/hypr/profiles/laptop.conf`
 
-To switch to laptop mode, replace with:
-
-`source = $HOME/.config/hypr/profiles/laptop.conf`
-
-To switch to desktop mode, replace with:
+Select desktop mode with:
 
 `source = $HOME/.config/hypr/profiles/desktop.conf`
 
-then reload:
+Each profile also owns the unmodified function/media keys. The desktop profile
+uses DDC/CI for external-display brightness; the laptop profile uses the
+internal backlight.
+
+Like Niri's `machine.kdl`, `machine.conf` is stowed but ignored by Git so a
+pull cannot change another machine's active profile. Then reload:
 
 ```bash
 hyprctl reload

@@ -1,0 +1,4 @@
+# Per-machine Niri profile selector. It remains local so desktop and laptop can
+# choose different hardware bindings without changing the tracked repository.
+niri/machine.kdl
+hypr/machine.conf
