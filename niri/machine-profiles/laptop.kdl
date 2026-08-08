@@ -1,7 +1,7 @@
 // Laptop hardware/function keys.
 binds {
-    XF86MonBrightnessUp allow-when-locked=true { spawn "wm-brightness" "up"; }
-    XF86MonBrightnessDown allow-when-locked=true { spawn "wm-brightness" "down"; }
-    F3 allow-when-locked=true { spawn "wm-brightness" "up"; }
-    F2 allow-when-locked=true { spawn "wm-brightness" "down"; }
+    XF86MonBrightnessUp allow-when-locked=true { spawn-sh "$HOME/.local/bin/wm-brightness up"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn-sh "$HOME/.local/bin/wm-brightness down"; }
+    F3 allow-when-locked=true { spawn-sh "$HOME/.local/bin/wm-brightness up"; }
+    F2 allow-when-locked=true { spawn-sh "$HOME/.local/bin/wm-brightness down"; }
 }

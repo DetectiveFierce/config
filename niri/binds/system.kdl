@@ -9,7 +9,7 @@ binds {
     XF86AudioNext allow-when-locked=true { spawn "playerctl" "next"; }
 
     Super+P hotkey-overlay-title="Frozen Screenshot" { screenshot; }
-    Super+Shift+P hotkey-overlay-title="Pick Color" { spawn "wm-color-picker"; }
+    Super+Shift+P hotkey-overlay-title="Pick Color" { spawn-sh "$HOME/.local/bin/wm-color-picker"; }
     Print { screenshot; }
     Ctrl+Print { screenshot-screen; }
     Alt+Print { screenshot-window; }

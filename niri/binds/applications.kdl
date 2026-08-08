@@ -2,7 +2,7 @@ binds {
     Super+T hotkey-overlay-title="Open Ghostty" { spawn "ghostty"; }
     Super+Return hotkey-overlay-title="Open Kitty" { spawn "kitty"; }
     Super+Shift+T { spawn "ghostty"; }
-    Super+D hotkey-overlay-title="Open Application Launcher" { spawn "wm-app-launcher"; }
+    Super+D hotkey-overlay-title="Open Application Launcher" { spawn-sh "$HOME/.local/bin/wm-app-launcher"; }
     Super+L allow-inhibiting=false hotkey-overlay-title="Lock Screen" { spawn "hyprlock"; }
     Super+E { spawn "thunar"; }
     Super+W { spawn "zen-browser"; }
@@ -10,10 +10,10 @@ binds {
     Super+Z { spawn "zeditor"; }
     Super+C { spawn-sh "zeditor ~/.config/"; }
     Super+Shift+Z { spawn-sh "zeditor ~/.zshrc"; }
-    Super+V { spawn "wm-clipboard-menu"; }
+    Super+V { spawn-sh "$HOME/.local/bin/wm-clipboard-menu"; }
 
-    Super+R { spawn-sh "foot --app-id=float-term --config=$HOME/.config/foot/float-term.ini -e zsh -lc 'wm-recent-projects editor'"; }
-    Super+Shift+R { spawn-sh "foot --app-id=float-term --config=$HOME/.config/foot/float-term.ini -e $SHELL -lc 'source ~/.zshrc && wm-recent-projects fm'"; }
+    Super+R { spawn-sh "foot --app-id=float-term --config=$HOME/.config/foot/float-term.ini -e zsh -lc '$HOME/.local/bin/wm-recent-projects editor'"; }
+    Super+Shift+R { spawn-sh "foot --app-id=float-term --config=$HOME/.config/foot/float-term.ini -e $SHELL -lc 'source ~/.zshrc && $HOME/.local/bin/wm-recent-projects fm'"; }
 
     Super+Tab { focus-workspace "terminal"; }
     F4 { focus-workspace "htop"; }
@@ -21,8 +21,8 @@ binds {
     Super+Ctrl+Shift+S { move-column-to-workspace "htop"; }
     Super+Slash { focus-workspace "cheatsheet"; }
 
-    Super+Ctrl+C { spawn "wm-cwd-launch" "cursor"; }
-    Super+Ctrl+F { spawn "wm-cwd-launch" "thunar"; }
-    Super+Ctrl+R { spawn "wm-cwd-launch" "rstudio"; }
-    Super+Ctrl+T { spawn "wm-cwd-launch" "terminal"; }
+    Super+Ctrl+C { spawn-sh "$HOME/.local/bin/wm-cwd-launch cursor"; }
+    Super+Ctrl+F { spawn-sh "$HOME/.local/bin/wm-cwd-launch thunar"; }
+    Super+Ctrl+R { spawn-sh "$HOME/.local/bin/wm-cwd-launch rstudio"; }
+    Super+Ctrl+T { spawn-sh "$HOME/.local/bin/wm-cwd-launch terminal"; }
 }

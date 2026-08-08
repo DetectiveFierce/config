@@ -31,6 +31,11 @@ if rg -n '/home/[^/]+|\.config/hypr/scripts' "$NIRI_DIR" "$ROOT_DIR/bin"; then
   echo "error: niri or shared helpers contain a host-specific path." >&2
   exit 1
 fi
+if rg -n 'spawn "wm-[^"]+"' "$NIRI_DIR" --glob '*.kdl'; then
+  echo "error: niri starts a shared helper through its boot-time PATH." >&2
+  echo '       use spawn-sh with $HOME/.local/bin/<helper> instead.' >&2
+  exit 1
+fi
 
 echo "==> effective binding uniqueness"
 bind_files=("$NIRI_DIR"/binds/*.kdl)

@@ -1,7 +1,7 @@
 // Desktop hardware/function keys.
 binds {
-    XF86MonBrightnessUp allow-when-locked=true { spawn "wm-brightness-external" "up"; }
-    XF86MonBrightnessDown allow-when-locked=true { spawn "wm-brightness-external" "down"; }
-    F3 allow-when-locked=true { spawn "wm-brightness-external" "up"; }
-    F2 allow-when-locked=true { spawn "wm-brightness-external" "down"; }
+    XF86MonBrightnessUp allow-when-locked=true { spawn-sh "$HOME/.local/bin/wm-brightness-external up"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn-sh "$HOME/.local/bin/wm-brightness-external down"; }
+    F3 allow-when-locked=true { spawn-sh "$HOME/.local/bin/wm-brightness-external up"; }
+    F2 allow-when-locked=true { spawn-sh "$HOME/.local/bin/wm-brightness-external down"; }
 }

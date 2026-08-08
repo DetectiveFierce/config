@@ -44,6 +44,7 @@
 keybind = shift+right=adjust_selection:right
 
 gtk-titlebar = false
+maximize = true
 
 # Font (matching foot)
 font-size = 18
