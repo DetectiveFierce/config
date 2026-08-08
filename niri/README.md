@@ -1,149 +1,72 @@
-# Niri + DMS Setup
+# Niri Configuration
 
-This directory is stowed to `~/.config/niri/`.
+Niri is the primary compositor. Git owns all niri input, appearance, layout,
+rules, outputs, and bindings. DMS-generated Niri fragments are also tracked,
+so changes made in the DMS GUI update this repository immediately.
 
-## 1) Install required packages
+## Layout
 
-Arch Linux (base set used by this config and keybinds):
+`config.kdl` is an ordered include index:
 
-```bash
-sudo pacman -S --needed \
-  git stow niri \
-  kitty ghostty foot thunar \
-  waybar walker hyprlock \
-  wl-clipboard cliphist grim slurp imagemagick \
-  playerctl brightnessctl ddcutil
-```
+- `core/` contains input, layout, appearance, workspaces, and session settings.
+- `rules/` contains application and layer rules.
+- `binds/` contains the canonical window, application, and system keymaps.
+- `outputs/` contains tracked laptop and desktop monitor definitions.
+- `machine-profiles/` contains only device-specific hardware bindings.
+- `dms/` is the generated override layer owned by the DMS GUI.
+- `machine.kdl` is an ignored local selector.
 
-Also install the Dank Material Shell application itself from your preferred source.  
-This repo provides its config under `DankMaterialShell/` (stowed to `~/.config/DankMaterialShell/`).
+Generated `basicsettings.kdl` and `keybinds.kdl` files from niri-settings remain
+local and excluded. In contrast, every `dms/*.kdl` file is included and deployed
+back to this repository. Do not edit DMS fragments by hand; use the DMS GUI and
+review the resulting `git diff` here.
 
-## 2) Import and apply the config
+## Setup
 
 ```bash
 git clone https://github.com/DetectiveFierce/config.git ~/config
 cd ~/config
+cp .dotter/local.toml.example .dotter/local.toml
+dotter deploy --dry-run
+dotter deploy
+./dotfiles bootstrap
 ./dotfiles doctor
-./dotfiles apply --backup
+./scripts/check-niri.sh
 ```
 
-`--backup` moves conflicting local files to:
-
-```text
-~/.local/state/dotfiles/backups/<timestamp>/
-```
-
-Verify symlinks:
-
-```bash
-ls -l ~/.config/niri/config.kdl
-ls -l ~/.config/DankMaterialShell/settings.json
-```
-
-Reload Niri config after edits:
-
-```bash
-niri msg action load-config-file
-```
-
-## 3) Device-specific monitor layouts and controls
-
-Shared Niri settings live in `config.kdl`. Monitor layouts are split by device:
-
-- `outputs/laptop.kdl` contains the laptop panel settings.
-- `outputs/desktop.kdl` contains the desktop monitor topology.
-
-Both files are included by `config.kdl`. Niri ignores definitions for outputs
-that are not connected, so pulling on either device does not require changing a
-profile selector or modifying a tracked file. If a connector name changes, run
-`niri msg outputs` on that device and update only its output file.
-
-Hardware and bare function-key bindings are machine-specific:
-
-- `machine-profiles/desktop.kdl` uses DDC/CI to synchronize external displays.
-- `machine-profiles/laptop.kdl` uses the laptop's internal backlight.
-
-Select one profile in the untracked `machine.kdl` file. It is stowed normally,
-but ignored by Git so each machine retains its own selection:
-
-```bash
-# Desktop
-printf 'include "machine-profiles/desktop.kdl"\n' > niri/machine.kdl
-
-# Laptop
-printf 'include "machine-profiles/laptop.kdl"\n' > niri/machine.kdl
-```
-
-Hyprland keeps the corresponding controls directly in
-`profiles/desktop.conf` and `profiles/laptop.conf`. Its untracked
-`machine.conf` selector chooses the monitor profile and hardware bindings
-together.
-
-### Desktop layout details
-
-Hyprland desktop layout source:
-
-`~/.config/hypr/profiles/desktop.conf`
-
-Current profile values:
-
-```ini
-monitor=HDMI-A-2,1920x1080,0x0,1
-monitor=HDMI-A-1,1920x1080,1920x0,1
-monitor=DP-1,2560x1600@60,1120x1080,2
-```
-
-Niri equivalent (`outputs/desktop.kdl`):
+Select hardware controls locally:
 
 ```kdl
-output "HDMI-A-2" {
-    mode "1920x1080"
-    scale 1
-    transform "normal"
-    position x=0 y=0
-}
+// Desktop
+include "machine-profiles/desktop.kdl"
 
-output "HDMI-A-1" {
-    mode "1920x1080"
-    scale 1
-    transform "normal"
-    position x=1920 y=0
-}
-
-output "DP-1" {
-    mode "2560x1600@60"
-    scale 2
-    transform "normal"
-    position x=1120 y=1080
-}
+// Laptop
+include "machine-profiles/laptop.kdl"
 ```
 
-After changing either output profile, run:
+Store the selected line in `niri/machine.kdl`; Git intentionally ignores it.
+Both output files are always included because niri ignores disconnected
+outputs.
 
-```bash
-niri msg action load-config-file
-```
-
-Check output names and available modes with:
-
-```bash
-niri msg outputs
-```
-
-## 4) Pull updates on another device
+## Editing and synchronization
 
 ```bash
 cd ~/config
 git pull --ff-only
-./dotfiles apply
-niri validate
+dotter deploy
+./scripts/check-niri.sh
 niri msg action load-config-file
 ```
 
-`./dotfiles apply` is needed when a pull adds new files, because it creates the
-new symlinks under `~/.config`. Existing symlinked files update immediately.
+Existing linked files update immediately. Re-run `dotter deploy` when a pull adds or
+moves files. See `KEYMAP.md` for the shortcut model and run `niri msg outputs`
+before changing monitor identities, modes, scales, or positions.
 
-Files created locally by niri-settings (`basicsettings.kdl` and `keybinds.kdl`)
-are optional includes and stay outside Git. Shared workflow overrides live in
-`shared/workflow.kdl`, loaded after those includes so both machines get the
-same key behavior.
+The DMS compositor, display, keybinding, cursor, theme, and window-rule menus
+write through `~/.config/niri/dms/*.kdl` symlinks into `niri/dms/`. Run
+`./scripts/check-niri.sh` after GUI changes; it validates the complete include
+graph and detects conflicts between handwritten and DMS-generated bindings.
+
+Hyprland remains a secondary compatibility configuration. Shared commands live
+in `~/.local/bin`; compositor-neutral behavior must not be added under
+`hypr/scripts`.

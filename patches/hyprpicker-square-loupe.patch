@@ -1,0 +1,95 @@
+diff --git a/src/hyprpicker.cpp b/src/hyprpicker.cpp
+index 2f03fdc..8abc294 100644
+--- a/src/hyprpicker.cpp
++++ b/src/hyprpicker.cpp
+@@ -16,6 +16,15 @@ static void sigHandler(int sig) {
+     g_pHyprpicker->m_bRunning.store(false);
+ }
+-
++
++static void roundedRectangle(cairo_t* cairo, double x, double y, double width, double height, double radius) {
++    cairo_new_sub_path(cairo);
++    cairo_arc(cairo, x + width - radius, y + radius, radius, -M_PI_2, 0);
++    cairo_arc(cairo, x + width - radius, y + height - radius, radius, 0, M_PI_2);
++    cairo_arc(cairo, x + radius, y + height - radius, radius, M_PI_2, M_PI);
++    cairo_arc(cairo, x + radius, y + radius, radius, M_PI, 3 * M_PI_2);
++    cairo_close_path(cairo);
++}
++
+ void CHyprpicker::init() {
+     m_pXKBContext = xkb_context_new(XKB_CONTEXT_NO_FLAGS);
+     if (!m_pXKBContext)
+@@ -512,17 +521,15 @@ void CHyprpicker::renderSurface(CLayerSurface* pSurface, bool forceInactive) {
+             cairo_save(PCAIRO);
+-
++
+             const auto CLICKPOSBUF = CLICKPOS / PBUFFER->pixelSize * pSurface->screenBuffer->pixelSize;
+-
+-            const auto PIXCOLOR = getColorFromPixel(pSurface, CLICKPOSBUF);
+-            cairo_set_source_rgba(PCAIRO, PIXCOLOR.r / 255.f, PIXCOLOR.g / 255.f, PIXCOLOR.b / 255.f, PIXCOLOR.a / 255.f);
+-
+-            cairo_scale(PCAIRO, 1, 1);
+-
+-            cairo_arc(PCAIRO, CLICKPOS.x, CLICKPOS.y, m_iCircleRadius + 5 / SCALEBUFS.x, 0, 2 * M_PI);
+-            cairo_clip(PCAIRO);
+-
++            const auto LENS_HALF   = m_iCircleRadius / SCALEBUFS.x;
++            const auto LENS_X      = CLICKPOS.x - LENS_HALF;
++            const auto LENS_Y      = CLICKPOS.y - LENS_HALF;
++            const auto LENS_SIZE   = LENS_HALF * 2;
++            const auto CORNER      = 12.0;
++
++            cairo_set_source_rgba(PCAIRO, 0.08, 0.08, 0.08, 0.96);
++            roundedRectangle(PCAIRO, LENS_X - 3, LENS_Y - 3, LENS_SIZE + 6, LENS_SIZE + 6, CORNER + 3);
+             cairo_fill(PCAIRO);
+-            cairo_paint(PCAIRO);
+-
++
+             cairo_surface_flush(PBUFFER->surface);
+-
++
+@@ -538,10 +545,42 @@ void CHyprpicker::renderSurface(CLayerSurface* pSurface, bool forceInactive) {
+             cairo_matrix_translate(&matrix, (-CLICKPOSBUF.x / SCALEBUFS.x) - 0.5f, (-CLICKPOSBUF.y / SCALEBUFS.y) - 0.5f);
+             cairo_pattern_set_matrix(PATTERN, &matrix);
+             cairo_set_source(PCAIRO, PATTERN);
+-            cairo_arc(PCAIRO, CLICKPOS.x, CLICKPOS.y, m_iCircleRadius / SCALEBUFS.x, 0, 2 * M_PI);
++            roundedRectangle(PCAIRO, LENS_X, LENS_Y, LENS_SIZE, LENS_SIZE, CORNER);
+             cairo_clip(PCAIRO);
+             cairo_paint(PCAIRO);
+-
++
++            // Pixel grid, aligned to the zoomed source pixels.
++            cairo_set_source_rgba(PCAIRO, 1.0, 1.0, 1.0, 0.24);
++            cairo_set_line_width(PCAIRO, 0.75);
++            const auto CELL = m_fZoomScale / SCALEBUFS.x;
++            for (double offset = CELL / 2; offset < LENS_HALF; offset += CELL) {
++                cairo_move_to(PCAIRO, CLICKPOS.x + offset, LENS_Y);
++                cairo_line_to(PCAIRO, CLICKPOS.x + offset, LENS_Y + LENS_SIZE);
++                cairo_move_to(PCAIRO, CLICKPOS.x - offset, LENS_Y);
++                cairo_line_to(PCAIRO, CLICKPOS.x - offset, LENS_Y + LENS_SIZE);
++                cairo_move_to(PCAIRO, LENS_X, CLICKPOS.y + offset);
++                cairo_line_to(PCAIRO, LENS_X + LENS_SIZE, CLICKPOS.y + offset);
++                cairo_move_to(PCAIRO, LENS_X, CLICKPOS.y - offset);
++                cairo_line_to(PCAIRO, LENS_X + LENS_SIZE, CLICKPOS.y - offset);
++            }
++            cairo_stroke(PCAIRO);
++            cairo_reset_clip(PCAIRO);
++
++            // Crisp outer border and precise red center target.
++            cairo_set_source_rgba(PCAIRO, 0.95, 0.95, 0.95, 1.0);
++            cairo_set_line_width(PCAIRO, 2.0);
++            roundedRectangle(PCAIRO, LENS_X, LENS_Y, LENS_SIZE, LENS_SIZE, CORNER);
++            cairo_stroke(PCAIRO);
++
++            cairo_set_source_rgba(PCAIRO, 1.0, 0.0, 0.0, 1.0);
++            cairo_set_line_width(PCAIRO, 2.0);
++            cairo_rectangle(PCAIRO, CLICKPOS.x - CELL / 2, CLICKPOS.y - CELL / 2, CELL, CELL);
++            cairo_move_to(PCAIRO, CLICKPOS.x - CELL, CLICKPOS.y);
++            cairo_line_to(PCAIRO, CLICKPOS.x + CELL, CLICKPOS.y);
++            cairo_move_to(PCAIRO, CLICKPOS.x, CLICKPOS.y - CELL);
++            cairo_line_to(PCAIRO, CLICKPOS.x, CLICKPOS.y + CELL);
++            cairo_stroke(PCAIRO);
++
+             if (!m_bDisablePreview) {
+                 const auto  currentColor = getColorFromPixel(pSurface, CLICKPOS);
+                 std::string previewBuffer;

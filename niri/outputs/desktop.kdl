@@ -1,20 +1,20 @@
 // Desktop monitor topology. Positions use logical pixels after scaling.
-output "HDMI-A-2" {
-    mode "1920x1080"
+output "Microstep MSI MP273A PB4H884700508" {
+    mode "1920x1080@99.999"
     scale 1
     transform "normal"
     position x=0 y=0
 }
 
-output "HDMI-A-1" {
-    mode "1920x1080"
+output "Microstep MSI MP251W E2 PD4M034900167" {
+    mode "1920x1080@120.000"
     scale 1
     transform "normal"
     position x=1920 y=0
 }
 
-output "DP-1" {
-    mode "2560x1600@60"
+output "PNP(HSJ) M133Q01 000000000001" {
+    mode "2560x1600@59.999"
     scale 2
     transform "normal"
     position x=1120 y=1080

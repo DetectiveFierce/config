@@ -1,0 +1,23 @@
+environment {
+    GTK_THEME "Hate-of-Nature"
+    XDG_CURRENT_DESKTOP "niri"
+    XDG_SESSION_DESKTOP "niri"
+    XDG_SESSION_TYPE "wayland"
+    QT_QPA_PLATFORM "wayland;xcb"
+    QT_QPA_PLATFORMTHEME "gtk3"
+}
+
+overview {
+    zoom 0.4
+}
+
+animations {
+    on
+    slowdown 1.0
+}
+
+hotkey-overlay {
+    hide-not-bound
+}
+
+screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"

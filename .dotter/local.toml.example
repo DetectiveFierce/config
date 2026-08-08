@@ -1,0 +1,10 @@
+includes = []
+packages = ["default"]
+
+# Machine selectors are intentionally untracked. Create them from the matching
+# profile before deploying this file map on a new host.
+[files]
+"niri/machine.kdl" = "~/.config/niri/machine.kdl"
+"hypr/machine.conf" = "~/.config/hypr/machine.conf"
+
+[variables]

@@ -4,12 +4,25 @@
 // custom settings, run the `open default settings` command
 // from the command palette or from `Zed` application menu.
 {
+  "project_panel": {
+    "dock": "left"
+  },
+  "outline_panel": {
+    "dock": "left"
+  },
+  "collaboration_panel": {
+    "dock": "left"
+  },
+  "git_panel": {
+    "dock": "left"
+  },
   "edit_predictions": {
     "provider": "copilot"
   },
   "icon_theme": "Colored Zed Icons Theme Dark",
   "lsp_document_colors": "background",
   "agent": {
+    "dock": "right",
     "default_profile": "write",
     "default_model": {
       "provider": "copilot_chat",

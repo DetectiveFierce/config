@@ -1,9 +1,0 @@
-// Shared workflow overrides, loaded after locally generated niri-settings.
-input {
-    // Caps Lock is Hyper via xkb's caps:hyper option, exposed as Mod3.
-    mod-key "Mod3"
-}
-
-layout {
-    center-focused-column "on-overflow"
-}

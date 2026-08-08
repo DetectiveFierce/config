@@ -1,0 +1,74 @@
+[helpers]
+
+[default]
+depends = []
+
+# Repository paths describe what a file is; target paths describe where the
+# application expects it. This keeps XDG implementation details out of the
+# repository layout.
+[default.files]
+"zsh/.zshrc" = "~/.zshrc"
+bin = "~/.local/bin"
+wallpapers = "~/.local/share/wallpapers"
+systemd-user = "~/.config/systemd/user"
+vicinae = "~/.config/vicinae"
+vicinae-themes = "~/.local/share/vicinae/themes"
+"GTK Theme" = "~/.local/share/themes/Dark-Green-Jungle"
+"Hate of Nature GTK Theme" = "~/.local/share/themes/Hate-of-Nature"
+
+alacritty = "~/.config/alacritty"
+foot = "~/.config/foot"
+fuzzel = "~/.config/fuzzel"
+ghostty = "~/.config/ghostty"
+hypr-dock = "~/.config/hypr-dock"
+kitty = "~/.config/kitty"
+rstudio = "~/.config/rstudio"
+walker = "~/.config/walker"
+waybar = "~/.config/waybar"
+
+# These applications keep documentation or local-only files beside their
+# configuration, so list only the deployable parts instead of linking the
+# entire repository directory.
+"Antigravity/User" = "~/.config/Antigravity/User"
+"Cursor/User" = "~/.config/Cursor/User"
+"DankMaterialShell/firefox.css" = "~/.config/DankMaterialShell/firefox.css"
+"DankMaterialShell/plugin_settings.json" = "~/.config/DankMaterialShell/plugin_settings.json"
+"DankMaterialShell/plugins" = "~/.config/DankMaterialShell/plugins"
+"DankMaterialShell/settings.json" = "~/.config/DankMaterialShell/settings.json"
+"DankMaterialShell/themes" = "~/.config/DankMaterialShell/themes"
+"DankMaterialShell/zen.css" = "~/.config/DankMaterialShell/zen.css"
+
+"hypr/assets" = "~/.config/hypr/assets"
+"hypr/bin/hypr-alttab" = "~/.config/hypr/bin/hypr-alttab"
+"hypr/hypr-cwd-launch" = "~/.config/hypr/hypr-cwd-launch"
+"hypr/hyprland.conf" = "~/.config/hypr/hyprland.conf"
+"hypr/hyprlock.conf" = "~/.config/hypr/hyprlock.conf"
+"hypr/profiles" = "~/.config/hypr/profiles"
+"hypr/scripts" = "~/.config/hypr/scripts"
+
+"niri/binds" = "~/.config/niri/binds"
+"niri/config.kdl" = "~/.config/niri/config.kdl"
+"niri/core" = "~/.config/niri/core"
+"niri/dms" = "~/.config/niri/dms"
+"niri/machine-profiles" = "~/.config/niri/machine-profiles"
+"niri/outputs" = "~/.config/niri/outputs"
+"niri/rules" = "~/.config/niri/rules"
+
+"nvim/colors" = "~/.config/nvim/colors"
+"nvim/init.lua" = "~/.config/nvim/init.lua"
+"nvim/lazy-lock.json" = "~/.config/nvim/lazy-lock.json"
+"nvim/lua" = "~/.config/nvim/lua"
+"nvim/snippets" = "~/.config/nvim/snippets"
+
+"zed/extensions" = "~/.config/zed/extensions"
+"zed/keymap.json" = "~/.config/zed/keymap.json"
+"zed/settings.json" = "~/.config/zed/settings.json"
+"zed/tasks.json" = "~/.config/zed/tasks.json"
+"zed/themes" = "~/.config/zed/themes"
+
+[default.variables]
+
+[settings]
+# Config files remain symlinks into this repository, so editing either the
+# repository file or its deployed path changes the same file immediately.
+default_target_type = "symbolic"

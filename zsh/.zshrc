@@ -19,12 +19,8 @@ path+=("$HOME/.cargo/bin")
 export PNPM_HOME="$HOME/.local/share/pnpm"
 export BUN_INSTALL="$HOME/.bun"
 
-# Oh My Zsh (prefer repo-local, fallback to user install)
-if [[ -r "$HOME/config/zsh/.oh-my-zsh/oh-my-zsh.sh" ]]; then
-  export ZSH="$HOME/config/zsh/.oh-my-zsh"
-elif [[ -r "$HOME/.oh-my-zsh/oh-my-zsh.sh" ]]; then
-  export ZSH="$HOME/.oh-my-zsh"
-fi
+# Oh My Zsh is an external, pinned dependency installed by `./dotfiles bootstrap`.
+export ZSH="${XDG_DATA_HOME:-$HOME/.local/share}/oh-my-zsh"
 ZSH_THEME="spaceship"
 
 # Spaceship: keep prompt concise and arrow-based
@@ -60,11 +56,10 @@ plugins=(
   command-not-found
   colored-man-pages
   fzf
-  zsh-autosuggestions
   history-substring-search
-  zsh-syntax-highlighting
 )
 
+# fzf-tab must load before plugins that wrap ZLE widgets.
 if command -v zoxide >/dev/null 2>&1; then
   plugins+=(zoxide)
 fi
@@ -79,6 +74,7 @@ elif [[ -r "/usr/share/zsh/plugins/fzf-tab-git/fzf-tab.plugin.zsh" ]]; then
 elif [[ -r "/usr/share/zsh/plugins/fzf-tab-source/fzf-tab.plugin.zsh" ]]; then
   FZF_TAB_PLUGIN_FILE="/usr/share/zsh/plugins/fzf-tab-source/fzf-tab.plugin.zsh"
 fi
+plugins+=(zsh-autosuggestions zsh-syntax-highlighting)
 
 if [[ -n "${ZSH:-}" ]] && [[ -r "$ZSH/oh-my-zsh.sh" ]]; then
   source "$ZSH/oh-my-zsh.sh"
@@ -118,8 +114,21 @@ spaceship_dir() {
 }
 
 # Completion + tab UX
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
-zstyle ':completion:*' menu select
+# Prefer exact results, then relax to case-insensitive and typo-tolerant matches.
+zstyle ':completion:*' completer _complete _match _approximate
+zstyle ':completion:*' matcher-list \
+  '' \
+  'm:{a-zA-Z}={A-Za-z}' \
+  'r:|[._-]=* r:|=*'
+zstyle ':completion:*' max-errors 1 numeric
+zstyle ':completion:*' menu no
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*' format '%F{#4d6626}  %d%f'
+zstyle ':completion:*' descriptions yes
+zstyle ':completion:*' verbose yes
+zstyle ':completion:*' squeeze-slashes true
+zstyle ':completion:*' use-cache true
+zstyle ':completion:*' cache-path "$HOME/.cache/zsh"
 zstyle ':completion:*' list-colors \
   'no=38;2;153;204;88' \
   'fi=38;2;153;204;88' \
@@ -128,15 +137,22 @@ zstyle ':completion:*' list-colors \
   'pi=38;2;253;151;31' \
   'so=38;2;174;43;90' \
   'ex=38;2;166;226;46'
-zstyle ':completion:*' completer _extensions _complete _approximate
-zstyle ':completion:*:approximate:*' max-errors 2 numeric
 zstyle ':fzf-tab:*' fzf-command fzf
+zstyle ':fzf-tab:*' switch-group 'ctrl-left' 'ctrl-right'
+zstyle ':fzf-tab:*' continuous-trigger '/'
+zstyle ':fzf-tab:*' single-group color header
 zstyle ':fzf-tab:*' fzf-flags \
-  --height=55% \
+  --height=45% \
   --layout=reverse \
-  --border \
-  --preview-window=right:55%:wrap \
-  --info=inline \
+  --border=rounded \
+  --info=inline-right \
+  --prompt='  ' \
+  --pointer='›' \
+  --marker='✓' \
+  --separator='─' \
+  --scrollbar='│' \
+  --bind='tab:down,btab:up,ctrl-space:toggle,ctrl-p:toggle-preview' \
+  --preview-window=right:50%:wrap:hidden \
   --ansi
 zstyle ':fzf-tab:complete:*:*' fzf-preview \
   'if [[ -d $realpath ]]; then
@@ -155,6 +171,17 @@ zstyle ':fzf-tab:complete:*:*' fzf-preview \
 if (( $+widgets[fzf-tab-complete] )); then
   bindkey '^I' fzf-tab-complete
 fi
+
+# Suggestions stay subtle; End accepts the whole suggestion, while Ctrl-Right
+# accepts it one word at a time.
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#4d6626'
+bindkey '^[[F' autosuggest-accept
+bindkey '^[[1;5C' forward-word
+
+HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=1
+HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND='fg=#22350a,bg=#99cc58,bold'
+HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND='fg=#22350a,bg=#f92672,bold'
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
 
@@ -179,8 +206,6 @@ if [[ -x "$HOME/python/venv/bin/pip" ]]; then
   alias pip="$HOME/python/venv/bin/pip"
 fi
 alias tmux="tmux -2"
-alias nvimpush='cd ~/.config/nvim && git add . && git commit -m "update $(TZ=America/New_York date +\"%Y-%m-%d %H:%M:%S %Z\")" && git push'
-alias nvimpull='cd ~/.config/nvim && git pull'
 alias create-tex="$HOME/Landing Zone/Latex Projects/create-tex.sh"
 
 # Environment
@@ -196,3 +221,25 @@ if command -v neofetch >/dev/null 2>&1; then
 elif command -v fastfetch >/dev/null 2>&1; then
   fastfetch
 fi
+
+# >>> juliaup initialize >>>
+
+# !! Contents within this block are managed by juliaup !!
+
+path=("$HOME/.juliaup/bin" $path)
+export PATH
+# Tab completion for juliaup and julia channel selection
+[ -f "$HOME/.julia/juliaup/completions/zsh.zsh" ] && source "$HOME/.julia/juliaup/completions/zsh.zsh"
+
+# <<< juliaup initialize <<<
+
+# >>> Codex installer >>>
+export PATH="$HOME/.local/bin:$PATH"
+# <<< Codex installer <<<
+
+# SSH agent for laptop key
+if ! pgrep -u "$USER" ssh-agent >/dev/null; then
+    eval "$(ssh-agent -s)" >/dev/null 2>&1
+fi
+ssh-add -l 2>/dev/null | grep -q laptop-key ||
+  ssh-add ~/.ssh/laptop-key >/dev/null 2>&1 || true

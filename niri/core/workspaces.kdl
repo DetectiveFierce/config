@@ -1,0 +1,5 @@
+// Named workspaces are intentionally unpinned so niri can place them on the
+// output where they are first used.
+workspace "terminal"
+workspace "htop"
+workspace "cheatsheet"

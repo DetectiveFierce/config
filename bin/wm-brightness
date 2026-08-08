@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+direction="${1:-}"
+if [[ "$direction" != "up" && "$direction" != "down" ]]; then
+  exit 2
+fi
+
+notify_brightness() {
+  local percent="${1:-}"
+  local notify_id_file notify_id new_id
+  local replace_args=()
+
+  [[ "$percent" =~ ^[0-9]+$ ]] || return 0
+  (( percent < 0 )) && percent=0
+  (( percent > 100 )) && percent=100
+
+  command -v notify-send >/dev/null 2>&1 || return 0
+
+  notify_id_file="${XDG_RUNTIME_DIR:-/tmp}/brightness-osd.id"
+  if [[ -f "$notify_id_file" ]]; then
+    notify_id="$(<"$notify_id_file")"
+    if [[ "$notify_id" =~ ^[0-9]+$ ]]; then
+      replace_args=(--replace-id="$notify_id")
+    fi
+  fi
+
+  if new_id="$(
+    notify-send \
+      --print-id \
+      --app-name="brightness-osd" \
+      --transient \
+      --expire-time=1200 \
+      --hint="int:value:${percent}" \
+      "Brightness" \
+      "${percent}%" \
+      "${replace_args[@]}"
+  )"; then
+    printf '%s\n' "$new_id" >"$notify_id_file"
+  fi
+}
+
+# Prefer native laptop backlight when available.
+if command -v brightnessctl >/dev/null 2>&1 && [[ -d /sys/class/backlight ]] && compgen -G "/sys/class/backlight/*" >/dev/null; then
+  if [[ "$direction" == "up" ]]; then
+    brightnessctl set +10% >/dev/null
+  else
+    brightnessctl set 10%- >/dev/null
+  fi
+
+  notify_brightness "$(brightnessctl -m | awk -F, 'NR == 1 { gsub(/%/, "", $4); print int($4) }')"
+  exit 0
+fi
+
+# Fallback to external monitor brightness over DDC/CI.
+if command -v ddcutil >/dev/null 2>&1; then
+  current_percent=""
+
+  if [[ "$direction" == "up" ]]; then
+    ddcutil setvcp 10 + 15 --display "${DDCUTIL_DISPLAY:-1}" >/dev/null
+  else
+    ddcutil setvcp 10 - 15 --display "${DDCUTIL_DISPLAY:-1}" >/dev/null
+  fi
+
+  current_percent="$(
+    ddcutil getvcp 10 --display "${DDCUTIL_DISPLAY:-1}" 2>/dev/null \
+      | sed -nE 's/.*current value = *([0-9]+), max value = *([0-9]+).*/\1 \2/p' \
+      | awk '{ if ($2 > 0) printf "%d\n", ($1 * 100) / $2 }'
+  )"
+  notify_brightness "$current_percent"
+  exit 0
+fi
+
+exit 1

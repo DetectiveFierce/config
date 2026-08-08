@@ -1,4 +1,17 @@
-# Per-machine Niri profile selector. It remains local so desktop and laptop can
+# Dotter's machine selection and generated deployment cache are local state.
+.dotter/local.toml
+.dotter/cache.toml
+.dotter/cache/
+
+# Per-machine compositor selectors remain local so desktop and laptop can
 # choose different hardware bindings without changing the tracked repository.
 niri/machine.kdl
 hypr/machine.conf
+
+# Generated niri-settings files are local runtime state. The tracked niri
+# configuration is authoritative and never includes these files.
+niri/basicsettings.kdl
+niri/keybinds.kdl
+
+# Third-party shell framework installed by `./dotfiles bootstrap`.
+zsh/.oh-my-zsh/

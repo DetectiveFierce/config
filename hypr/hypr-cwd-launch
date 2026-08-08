@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Backwards-compatible shim; canonical script lives in scripts/.
-exec "$HOME/.config/hypr/scripts/cwd-launch.sh" "$@"
+# Backwards-compatible shim; canonical command is compositor-neutral.
+exec "$HOME/.local/bin/wm-cwd-launch" "$@"

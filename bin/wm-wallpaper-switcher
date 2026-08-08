@@ -1,0 +1,120 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+WALLPAPER_DIR="${WALLPAPER_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/wallpapers}"
+RUNTIME_DIR="${XDG_RUNTIME_DIR:-/tmp/runtime-$UID}"
+LOCK_FILE="$RUNTIME_DIR/wm-wallpaper-switcher.lock"
+
+log() {
+  printf 'wallpaper-switcher: %s\n' "$*"
+}
+
+die() {
+  log "error: $*" >&2
+  exit 1
+}
+
+wait_for_daemon() {
+  local attempt
+  for attempt in {1..50}; do
+    if awww query >/dev/null 2>&1; then
+      return 0
+    fi
+    sleep 0.1
+  done
+  die "Awww daemon did not become ready"
+}
+
+current_wallpaper() {
+  awww query | sed -n 's/.*currently displaying: image: //p' | head -n 1
+}
+
+choose_next_wallpaper() {
+  local current current_real image image_real index
+  local -a images
+
+  mapfile -d '' -t images < <(
+    find -L "$WALLPAPER_DIR" -maxdepth 1 -type f \( \
+      -iname '*.avif' -o -iname '*.bmp' -o -iname '*.gif' -o \
+      -iname '*.jpeg' -o -iname '*.jpg' -o -iname '*.png' -o \
+      -iname '*.pnm' -o -iname '*.svg' -o -iname '*.tga' -o \
+      -iname '*.tiff' -o -iname '*.webp' \
+    \) -print0 | sort -z
+  )
+
+  ((${#images[@]} > 0)) || die "no supported images in $WALLPAPER_DIR"
+
+  current="$(current_wallpaper || true)"
+  current_real="$(readlink -f -- "$current" 2>/dev/null || true)"
+
+  for index in "${!images[@]}"; do
+    image="${images[$index]}"
+    image_real="$(readlink -f -- "$image" 2>/dev/null || true)"
+    if [[ -n "$current_real" && "$image_real" == "$current_real" ]]; then
+      printf '%s\n' "${images[$(((index + 1) % ${#images[@]}))]}"
+      return
+    fi
+  done
+
+  # A fresh daemon has no current image, so start from the first sorted entry.
+  printf '%s\n' "${images[0]}"
+}
+
+switch_wallpaper() {
+  local next
+  next="$(choose_next_wallpaper)"
+
+  # Awww decodes the replacement while its existing background surface remains
+  # alive. An instant transition swaps frames without clearing the layer.
+  awww img --resize crop --transition-type none -- "$next"
+
+  # Keep DMS theme state synchronized. Its wallpaper surface is disabled in
+  # settings.json, so Awww remains the only background renderer.
+  if command -v dms >/dev/null 2>&1 && systemctl --user is-active --quiet dms.service; then
+    dms ipc call wallpaper set "$next" >/dev/null || log "warning: DMS theme sync failed"
+  fi
+
+  log "displaying $next"
+}
+
+run_test() {
+  local interval="${WALLPAPER_TEST_INTERVAL:-10}"
+  local duration="${WALLPAPER_TEST_DURATION:-20}"
+  local elapsed=0 sleep_for
+
+  [[ "$interval" =~ ^[1-9][0-9]*$ ]] || die "test interval must be a positive integer"
+  [[ "$duration" =~ ^[1-9][0-9]*$ ]] || die "test duration must be a positive integer"
+
+  log "starting ${duration}s test; switching every ${interval}s"
+  switch_wallpaper
+  while ((elapsed < duration)); do
+    sleep_for=$interval
+    if ((elapsed + sleep_for > duration)); then
+      sleep_for=$((duration - elapsed))
+    fi
+    sleep "$sleep_for"
+    elapsed=$((elapsed + sleep_for))
+    if ((elapsed < duration)); then
+      switch_wallpaper
+    fi
+  done
+  log "completed ${duration}s test"
+}
+
+command -v awww >/dev/null 2>&1 || die "awww is not installed"
+[[ -d "$WALLPAPER_DIR" ]] || die "wallpaper directory not found: $WALLPAPER_DIR"
+mkdir -p "$RUNTIME_DIR"
+
+exec 9>"$LOCK_FILE"
+if ! flock -n 9; then
+  log "another switch is already running; skipping"
+  exit 0
+fi
+
+wait_for_daemon
+
+case "${1:---next}" in
+  --next) switch_wallpaper ;;
+  --test) run_test ;;
+  *) die "usage: wm-wallpaper-switcher [--next|--test]" ;;
+esac

@@ -20,20 +20,26 @@ echo
 echo "==> bash syntax checks"
 shell_scripts=(
   "./dotfiles"
-  "./stow-all.sh"
-  "./unstow-all.sh"
   "./hypr/hypr-cwd-launch"
   "./scripts/build-hate-of-nature-gtk-theme.sh"
   "./scripts/pre-push-checks.sh"
+  "./scripts/check-niri.sh"
 )
 while IFS= read -r -d '' script; do
   shell_scripts+=("$script")
 done < <(find ./hypr/scripts -maxdepth 1 -type f -print0 | sort -z)
+while IFS= read -r -d '' script; do
+  shell_scripts+=("$script")
+done < <(find ./bin -maxdepth 1 -type f -print0 | sort -z)
 
 for script in "${shell_scripts[@]}"; do
   bash -n "$script"
   printf '  [ok] %s\n' "$script"
 done
+
+echo
+echo "==> niri configuration"
+./scripts/check-niri.sh
 
 echo
 echo "==> perl syntax checks"

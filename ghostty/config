@@ -43,8 +43,10 @@
 # resize-overlay-duration = 4s 200ms
 keybind = shift+right=adjust_selection:right
 
+gtk-titlebar = false
+
 # Font (matching foot)
-font-size = 16
+font-size = 18
 
 # Theme (matching foot)
 background = 22350a

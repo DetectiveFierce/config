@@ -1,0 +1,12 @@
+[Unit]
+Description=Persistent Wayland wallpaper renderer
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=awww-daemon --format argb --quiet
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=graphical-session.target

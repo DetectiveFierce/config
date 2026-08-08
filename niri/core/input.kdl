@@ -1,0 +1,44 @@
+input {
+    mod-key "Mod3"
+    focus-follows-mouse max-scroll-amount="0%"
+
+    keyboard {
+        track-layout "window"
+        numlock
+        repeat-delay 600
+        repeat-rate 25
+        xkb {
+            // Caps Lock becomes Hyper (Mod3); `Mod` bindings use this key.
+            options "caps:hyper"
+        }
+    }
+
+    touchpad {
+        tap
+        natural-scroll
+        drag true
+        click-method "button-areas"
+        scroll-method "two-finger"
+        accel-speed 0.0
+        accel-profile "adaptive"
+        tap-button-map "left-right-middle"
+        scroll-factor 1.0
+    }
+
+    mouse {
+        accel-speed 0.0
+        accel-profile "adaptive"
+        scroll-factor 1.0
+    }
+}
+
+gestures {
+    hot-corners {
+        off
+    }
+}
+
+cursor {
+    xcursor-size 24
+    hide-when-typing
+}

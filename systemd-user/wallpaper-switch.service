@@ -1,0 +1,8 @@
+[Unit]
+Description=Switch to another wallpaper
+Requires=wallpaper-daemon.service
+After=wallpaper-daemon.service dms.service
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/wm-wallpaper-switcher --next

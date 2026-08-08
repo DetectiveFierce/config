@@ -1,0 +1,46 @@
+layout {
+    focus-ring {
+        on
+        width 3
+        active-color "#A6E22E"
+        inactive-color "#3A5412"
+    }
+
+    border {
+        off
+        width 3
+        active-color "#A6E22E"
+        inactive-color "#3A5412"
+        urgent-color "#F92672"
+    }
+
+    shadow {
+        on
+        softness 30
+        spread 5
+        offset x=0 y=5
+        color "#0D1303CC"
+    }
+
+    insert-hint {
+        color "#A6E22E70"
+    }
+
+    tab-indicator {
+        hide-when-single-tab
+        place-within-column
+        corner-radius 4
+        width 4
+        length total-proportion=1.0
+        gap 4
+        gaps-between-tabs 2
+    }
+}
+
+recent-windows {
+    highlight {
+        corner-radius 12
+        active-color "#2E4012"
+        urgent-color "#F92672"
+    }
+}
