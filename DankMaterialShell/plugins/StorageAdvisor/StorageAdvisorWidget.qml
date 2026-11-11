@@ -42,7 +42,7 @@ PluginComponent {
     function call(args, done) {
         let timeout = args[0] === "analyze" ? 600000 : (args[0] === "execute" ? 360000 : (args[0] === "preview" ? 120000 : 30000));
         Proc.runCommand(null,
-                        ["/home/shared-psychosis/.local/bin/storage-advisor"].concat(args),
+                        [Quickshell.env("HOME") + "/.local/bin/storage-advisor"].concat(args),
                         (stdout, code) => {
             let value = {};
             try { value = JSON.parse(stdout); }

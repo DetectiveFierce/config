@@ -1,7 +1,7 @@
 {
   "currentThemeName": "custom",
   "currentThemeCategory": "custom",
-  "customThemeFile": "/home/shared-psychosis/.config/DankMaterialShell/themes/hate-of-nature-dms/theme.json",
+  "customThemeFile": "~/.config/DankMaterialShell/themes/hate-of-nature-dms/theme.json",
   "cornerRadius": 12,
   "niriLayoutBorderSize": 2,
   "clockFormat": "12h",
