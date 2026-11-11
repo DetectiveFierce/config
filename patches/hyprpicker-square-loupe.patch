@@ -5,8 +5,7 @@ index 2f03fdc..8abc294 100644
 @@ -16,6 +16,15 @@ static void sigHandler(int sig) {
      g_pHyprpicker->m_bRunning.store(false);
  }
--
-+
+ 
 +static void roundedRectangle(cairo_t* cairo, double x, double y, double width, double height, double radius) {
 +    cairo_new_sub_path(cairo);
 +    cairo_arc(cairo, x + width - radius, y + radius, radius, -M_PI_2, 0);
@@ -21,8 +20,7 @@ index 2f03fdc..8abc294 100644
      if (!m_pXKBContext)
 @@ -512,17 +521,15 @@ void CHyprpicker::renderSurface(CLayerSurface* pSurface, bool forceInactive) {
              cairo_save(PCAIRO);
--
-+
+ 
              const auto CLICKPOSBUF = CLICKPOS / PBUFFER->pixelSize * pSurface->screenBuffer->pixelSize;
 -
 -            const auto PIXCOLOR = getColorFromPixel(pSurface, CLICKPOSBUF);
@@ -43,11 +41,9 @@ index 2f03fdc..8abc294 100644
 +            roundedRectangle(PCAIRO, LENS_X - 3, LENS_Y - 3, LENS_SIZE + 6, LENS_SIZE + 6, CORNER + 3);
              cairo_fill(PCAIRO);
 -            cairo_paint(PCAIRO);
--
-+
+ 
              cairo_surface_flush(PBUFFER->surface);
--
-+
+ 
 @@ -538,10 +545,42 @@ void CHyprpicker::renderSurface(CLayerSurface* pSurface, bool forceInactive) {
              cairo_matrix_translate(&matrix, (-CLICKPOSBUF.x / SCALEBUFS.x) - 0.5f, (-CLICKPOSBUF.y / SCALEBUFS.y) - 0.5f);
              cairo_pattern_set_matrix(PATTERN, &matrix);
@@ -56,8 +52,7 @@ index 2f03fdc..8abc294 100644
 +            roundedRectangle(PCAIRO, LENS_X, LENS_Y, LENS_SIZE, LENS_SIZE, CORNER);
              cairo_clip(PCAIRO);
              cairo_paint(PCAIRO);
--
-+
+ 
 +            // Pixel grid, aligned to the zoomed source pixels.
 +            cairo_set_source_rgba(PCAIRO, 1.0, 1.0, 1.0, 0.24);
 +            cairo_set_line_width(PCAIRO, 0.75);
