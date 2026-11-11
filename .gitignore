@@ -15,3 +15,11 @@ niri/keybinds.kdl
 
 # Third-party shell framework installed by `./dotfiles bootstrap`.
 zsh/.oh-my-zsh/
+storage-advisor/native/build/
+storage-advisor/storage_advisor/__pycache__/
+storage-advisor/tests/__pycache__/
+storage-advisor/__pycache__/
+
+# Toast configuration is source; bytecode and build artifacts are runtime state.
+toasts/**/__pycache__/
+toasts/__pycache__/

@@ -56,6 +56,8 @@ import py_compile
 import tempfile
 
 targets = [
+    "./toasts/manage.py",
+    "./toasts/localsend/receiver.py",
     "./scripts/test-hate-of-nature-gtk-theme-parse.py",
     "./scripts/test-hate-of-nature-gtk-theme-assets.py",
     "./scripts/test-hate-of-nature-gtk-theme-symbols.py",
@@ -80,6 +82,10 @@ else
   echo "==> shellcheck"
   echo "  [skip] shellcheck not installed"
 fi
+
+echo
+echo "==> desktop toast suite"
+python3 ./toasts/manage.py test
 
 echo
 echo "==> comprehensive GTK theme suite"

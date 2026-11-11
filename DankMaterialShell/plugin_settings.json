@@ -1,5 +1,8 @@
 {
   "memUsageGb": {
     "enabled": true
+  },
+  "storageAdvisor": {
+    "enabled": true
   }
 }

@@ -1,0 +1,18 @@
+[Unit]
+Description=Private storage advisor activity collector
+PartOf=graphical-session.target
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 -m storage_advisor.activityd
+Environment=PYTHONPATH=%h/config/storage-advisor
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=%h/.local/state/storage-advisor %t
+
+[Install]
+WantedBy=graphical-session.target

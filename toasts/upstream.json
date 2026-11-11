@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "upstream": {
+    "version": "1.6.3",
+    "url": "https://github.com/AvengeMedia/DankMaterialShell/releases/download/v1.6.3/dms-qml.tar.gz",
+    "sha256": "f8f3884aff9d29b008a50fd0d164b512a680a6cce209a8b62a690534fdfd4c80"
+  },
+  "patches": [
+    {
+      "path": "Services/BarWidgetService.qml",
+      "patch": "patches/01-BarWidgetService.patch",
+      "base_sha256": "63d55273bde812eb737aabaf0e9c6647384144f443096d015d17bd186cb33a88"
+    },
+    {
+      "path": "Services/NotificationService.qml",
+      "patch": "patches/02-NotificationService.patch",
+      "base_sha256": "f8aeb8d8d776cad7012effaf2b756a0144635ddead1a67666716383244ae1fcf"
+    },
+    {
+      "path": "Services/ToastService.qml",
+      "patch": "patches/03-ToastService.patch",
+      "base_sha256": "250743a0ae4145d12db7a344a5c8d6434aa308d8f40d65e5eeeda3ef46080f1f"
+    },
+    {
+      "path": "Modules/DankBar/DankBarContent.qml",
+      "patch": "patches/04-DankBarContent.patch",
+      "base_sha256": "79431b8c7c7b5eeec3d24a3ec7957656ee640744bad76b6b3c23c5151a18f3b7"
+    },
+    {
+      "path": "Modules/Notifications/Popup/NotificationPopup.qml",
+      "patch": "patches/05-NotificationPopup.patch",
+      "base_sha256": "97fd637b443f98ffceb27a19521799af800c7c901ce5b63f3b3d76a5c62f4e5c"
+    },
+    {
+      "path": "shell.qml",
+      "patch": "patches/07-shell.patch",
+      "base_sha256": "e35630e0e47c7ce9530c050ddbf22b9637344081b3aa8ae0163cf3c16aa6ccef"
+    }
+  ],
+  "replacements": [
+    {
+      "path": "Modules/Toast.qml",
+      "base_sha256": "363a1ee9936ff6d837f651610ac71fbf2ebc4543fe1342163674e49d3fb4c5ab"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Launch the pi desktop application without attaching it to this shell.
+# Use pi-cli when the terminal UI is wanted explicitly.
+set -u
+
+app="${PI_GUI_APPIMAGE:-$HOME/.local/opt/pi-gui/pi-gui.AppImage}"
+if [[ ! -x "$app" ]]; then
+  printf 'pi-gui is not installed or is not executable: %s\n' "$app" >&2
+  exit 1
+fi
+
+nohup "$app" "$@" >/dev/null 2>&1 </dev/null &
+disown

@@ -20,6 +20,14 @@ window-rule {
     open-floating true
 }
 
+// Fill the usable workspace while retaining the standard gaps and rounded corners.
+window-rule {
+    match app-id=r#"^zen$"#
+    open-maximized true
+    // Zen restores an OS-maximized state; keep it in Niri's rounded mode.
+    open-maximized-to-edges false
+}
+
 window-rule {
     match app-id=r#"^float-term$"#
     open-floating true
@@ -33,6 +41,21 @@ window-rule {
 }
 
 window-rule {
-    match app-id=r#"^(Codex|ChatGPT)$"#
-    open-maximized-to-edges true
+    match app-id=r#"^(Codex|Chatgpt|ChatGPT|chatgpt|com\.anthropic\.Claude)$"#
+    open-maximized true
+    open-maximized-to-edges false
+}
+
+window-rule {
+    match app-id=r#"^md\.obsidian\.Obsidian$"#
+    open-maximized true
+    open-maximized-to-edges false
+}
+
+// pi-gui identifies itself as "pi" on Wayland. Keep the standard gaps and
+// geometry corner radius while occupying the full usable output.
+window-rule {
+    match app-id=r#"^pi$"#
+    open-maximized true
+    open-maximized-to-edges false
 }

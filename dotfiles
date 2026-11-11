@@ -118,6 +118,9 @@ bootstrap() {
 
   "$DOTFILES_DIR/scripts/build-hyprpicker-styled.sh"
 
+  # Reproducible DMS toast UI, fonts, and background receiver.
+  python3 "$DOTFILES_DIR/toasts/manage.py" install --no-restart
+
   systemctl --user daemon-reload
   systemctl --user enable cliphist-text.service cliphist-image.service wallpaper-daemon.service wallpaper-switch.timer
   systemctl --user add-wants niri.service dms.service

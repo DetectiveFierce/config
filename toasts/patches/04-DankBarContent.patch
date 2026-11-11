@@ -1,0 +1,22 @@
+--- a/Modules/DankBar/DankBarContent.qml
++++ b/Modules/DankBar/DankBarContent.qml
+@@ -19,6 +19,19 @@
+     property var leftWidgetsModel
+     property var centerWidgetsModel
+     property var rightWidgetsModel
++    // Track the visible gap between launcher/workspaces and the app-title group.
++    Timer {
++        interval: 200
++        running: !topBarContent._barIsVertical
++        repeat: true
++        triggeredOnStart: true
++        onTriggered: {
++            const left = topBarContent.mapItemToScreen(hLeftSection, hLeftSection.width, 0);
++            const center = topBarContent.mapItemToScreen(hCenterSection, 0, 0);
++            if (left && center && center.x > left.x)
++                BarWidgetService.setToastAnchor(topBarContent._barScreenName, (left.x + center.x) / 2);
++        }
++    }
+     property var widgetOwner: null
+     property var hoverSections: null
+     property bool _animateFrameInsets: false

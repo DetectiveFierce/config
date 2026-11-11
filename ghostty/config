@@ -42,6 +42,8 @@
 # # Just for example:
 # resize-overlay-duration = 4s 200ms
 keybind = shift+right=adjust_selection:right
+keybind = ctrl+shift+p=unbind
+keybind = alt+p=toggle_command_palette
 
 gtk-titlebar = false
 maximize = true

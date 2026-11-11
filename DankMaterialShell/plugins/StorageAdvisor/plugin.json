@@ -1,0 +1,11 @@
+{
+  "id": "storageAdvisor",
+  "name": "Storage Advisor",
+  "description": "Private, local storage and software review",
+  "version": "1.0.0",
+  "author": "Local",
+  "type": "widget",
+  "capabilities": ["dankbar-widget", "monitoring"],
+  "component": "./StorageAdvisorWidget.qml",
+  "icon": "inventory_2"
+}

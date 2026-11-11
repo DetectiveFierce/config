@@ -1,0 +1,27 @@
+--- a/shell.qml
++++ b/shell.qml
+@@ -17,6 +17,18 @@
+ ShellRoot {
+     id: entrypoint
+ 
++    // Route Quickshell's own reload feedback through the shared desktop toast.
++    Connections {
++        target: Quickshell
++        function onReloadCompleted() {
++            Quickshell.inhibitReloadPopup();
++            Quickshell.execDetached(["python3", Quickshell.shellPath("scripts/toast-reload-notice.py")]);
++        }
++        function onReloadFailed(errorString) {
++            Quickshell.inhibitReloadPopup();
++            ToastService.showError("Configuration could not reload", errorString);
++        }
++    }
+     readonly property bool runGreeter: Quickshell.env("DMS_RUN_GREETER") === "1" || Quickshell.env("DMS_RUN_GREETER") === "true"
+     readonly property bool disableHotReload: Quickshell.env("DMS_DISABLE_HOT_RELOAD") === "1" || Quickshell.env("DMS_DISABLE_HOT_RELOAD") === "true"
+ 
+@@ -73,3 +85,5 @@
+         source: "DMSGreeter.qml"
+     }
+ }
++
++// Reload feedback uses the shared desktop toast anchor.

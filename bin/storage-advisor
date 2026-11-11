@@ -1,0 +1,8 @@
+#!/usr/bin/python3
+"""Stable local entry point used by DMS and systemd."""
+import sys
+
+sys.path.insert(0, "/home/shared-psychosis/config/storage-advisor")
+from storage_advisor.cli import main
+
+raise SystemExit(main())

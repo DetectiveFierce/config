@@ -9,8 +9,11 @@ depends = []
 [default.files]
 "zsh/.zshrc" = "~/.zshrc"
 bin = "~/.local/bin"
+"applications/pi-gui.desktop" = "~/.local/share/applications/pi-gui.desktop"
+"applications/pi-gui.svg" = "~/.local/share/icons/hicolor/scalable/apps/pi-gui.svg"
 wallpapers = "~/.local/share/wallpapers"
 systemd-user = "~/.config/systemd/user"
+"toasts" = "~/.config/dms-toasts"
 vicinae = "~/.config/vicinae"
 vicinae-themes = "~/.local/share/vicinae/themes"
 "GTK Theme" = "~/.local/share/themes/Dark-Green-Jungle"
@@ -18,13 +21,10 @@ vicinae-themes = "~/.local/share/vicinae/themes"
 
 alacritty = "~/.config/alacritty"
 foot = "~/.config/foot"
-fuzzel = "~/.config/fuzzel"
 ghostty = "~/.config/ghostty"
 hypr-dock = "~/.config/hypr-dock"
 kitty = "~/.config/kitty"
 rstudio = "~/.config/rstudio"
-walker = "~/.config/walker"
-waybar = "~/.config/waybar"
 
 # These applications keep documentation or local-only files beside their
 # configuration, so list only the deployable parts instead of linking the

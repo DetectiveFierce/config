@@ -1,0 +1,11 @@
+[Unit]
+Description=Weekly full private storage inventory
+
+[Timer]
+OnCalendar=weekly
+Persistent=true
+RandomizedDelaySec=2h
+Unit=storage-advisor-full.service
+
+[Install]
+WantedBy=timers.target

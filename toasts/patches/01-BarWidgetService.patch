@@ -1,0 +1,20 @@
+--- a/Services/BarWidgetService.qml
++++ b/Services/BarWidgetService.qml
+@@ -10,6 +10,17 @@
+ Singleton {
+     id: root
+ 
++    property var toastAnchors: ({})
++    function setToastAnchor(screenName, center) {
++        if (!screenName || !isFinite(center) || Math.abs((toastAnchors[screenName] ?? -1) - center) < 0.5)
++            return;
++        const next = Object.assign({}, toastAnchors);
++        next[screenName] = center;
++        toastAnchors = next;
++    }
++    function toastCenter(screen) {
++        return toastAnchors[screen?.name] ?? (screen?.width ?? 1920) * 0.28;
++    }
+     property var widgetRegistry: ({})
+     property var dankBarRepeater: null
+ 

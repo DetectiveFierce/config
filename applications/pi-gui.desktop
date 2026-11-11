@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=pi Coding Agent
+Comment=Desktop interface for the pi coding agent
+Exec=/home/shared-psychosis/.local/opt/pi-gui/pi-gui.AppImage
+TryExec=/home/shared-psychosis/.local/opt/pi-gui/pi-gui.AppImage
+Icon=/home/shared-psychosis/config/applications/pi-gui.svg
+Terminal=false
+Categories=Development;IDE;
+StartupWMClass=pi-gui

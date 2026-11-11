@@ -1,0 +1,106 @@
+#!/usr/bin/env bash
+# Lock niri without changing its output layout.
+set -euo pipefail
+PATH="$HOME/.local/bin:$PATH"
+
+for dependency in niri hyprlock swayidle jq flock; do
+  if ! command -v "$dependency" >/dev/null 2>&1; then
+    printf 'wm-lock-niri: missing %s\n' "$dependency" >&2
+    exit 1
+  fi
+done
+
+runtime_dir="${XDG_RUNTIME_DIR:?XDG_RUNTIME_DIR is required}"
+exec 9>"$runtime_dir/wm-lock-niri.lock"
+flock -n 9 || exit 0
+
+# Leave any lock started outside this helper alone.
+if pgrep -x hyprlock >/dev/null; then
+  exit 0
+fi
+
+outputs_json="$(niri msg --json outputs)"
+mapfile -t enabled_outputs < <(
+  jq -r 'to_entries
+    | map(select(.value.current_mode != null and .value.logical != null))
+    | sort_by(.value.logical.x, .value.logical.y)
+    | .[].key' <<<"$outputs_json"
+)
+if (( ${#enabled_outputs[@]} == 0 )); then
+  echo 'wm-lock-niri: no enabled output found' >&2
+  exit 1
+fi
+
+declare -A saved_brightness=()
+idle_pid=''
+cleanup() {
+  if [[ -n "$idle_pid" ]]; then
+    kill "$idle_pid" 2>/dev/null || true
+    wait "$idle_pid" 2>/dev/null || true
+  fi
+  niri msg action power-on-monitors >/dev/null 2>&1 || true
+  restore_pids=()
+  for bus in "${!saved_brightness[@]}"; do
+    ddcutil --noverify setvcp 10 "${saved_brightness[$bus]}" --bus "$bus" >/dev/null 2>&1 &
+    restore_pids+=("$!")
+  done
+  for pid in "${restore_pids[@]}"; do
+    wait "$pid" 2>/dev/null || true
+  done
+}
+trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+
+hyprlock --immediate-render --no-fade-in --quiet &
+locker_pid=$!
+# Give hyprlock a brief moment to establish its session lock.
+sleep 0.15
+if ! kill -0 "$locker_pid" 2>/dev/null; then
+  wait "$locker_pid"
+  exit 1
+fi
+
+swayidle -C /dev/null -w timeout 10 'niri msg action power-off-monitors' &
+idle_pid=$!
+sleep 0.05
+if ! kill -0 "$idle_pid" 2>/dev/null; then
+  echo 'wm-lock-niri: swayidle failed to start' >&2
+  wait "$locker_pid"
+  exit 1
+fi
+
+# Niri wakes all DPMS outputs together. Dim the other panels via DDC/CI
+# instead of disabling them, which would move their workspaces.
+if (( ${#enabled_outputs[@]} > 1 )) && command -v ddcutil >/dev/null 2>&1; then
+  declare -A bus_by_output=()
+  while read -r connector bus; do
+    bus_by_output[$connector]="$bus"
+  done < <(ddcutil detect --terse 2>/dev/null | awk '
+    /I2C bus:/ { bus=$3; sub(".*/i2c-", "", bus) }
+    /DRM connector:/ {
+      connector=$3
+      sub(/^card[0-9]+-/, "", connector)
+      if (bus != "") print connector, bus
+    }
+  ')
+
+  for output in "${enabled_outputs[@]:1}"; do
+    bus="${bus_by_output[$output]:-}"
+    [[ -n "$bus" ]] || continue
+    brightness="$(ddcutil --terse getvcp 10 --bus "$bus" 2>/dev/null | awk '$1 == "VCP" && $2 == "10" && $3 == "C" { print $4 }')"
+    [[ "$brightness" =~ ^[0-9]+$ ]] || continue
+    saved_brightness[$bus]="$brightness"
+  done
+  dim_pids=()
+  for bus in "${!saved_brightness[@]}"; do
+    ddcutil --noverify setvcp 10 0 --bus "$bus" >/dev/null 2>&1 &
+    dim_pids+=("$!")
+  done
+  for pid in "${dim_pids[@]}"; do
+    wait "$pid" 2>/dev/null || true
+  done
+fi
+niri msg action power-off-monitors
+
+wait "$locker_pid"

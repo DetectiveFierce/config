@@ -1,0 +1,9 @@
+[Unit]
+Description=Private storage advisor full inventory
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/storage-advisor analyze --full
+Nice=19
+IOSchedulingClass=idle
+NoNewPrivileges=yes

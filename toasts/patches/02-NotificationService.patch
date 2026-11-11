@@ -1,0 +1,26 @@
+--- a/Services/NotificationService.qml
++++ b/Services/NotificationService.qml
+@@ -847,7 +847,7 @@
+             }
+         }
+ 
+-        readonly property Timer timer: Timer {
++        readonly property CountdownClock timer: CountdownClock {
+             interval: {
+                 if (!wrapper.notification)
+                     return 5000;
+@@ -864,11 +864,12 @@
+                     return SettingsData.notificationTimeoutNormal;
+                 }
+             }
+-            repeat: false
+-            running: false
+             onTriggered: {
+                 if (interval > 0) {
+                     wrapper.popup = false;
++                    // Finish pending receive requests when their paused/resumed clock expires.
++                    if (wrapper.appName === "LocalSend" && wrapper.actions.some(a => a.identifier === "accept"))
++                        wrapper.notification.expire();
+                 }
+             }
+         }

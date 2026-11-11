@@ -3,7 +3,7 @@ binds {
     Super+Return hotkey-overlay-title="Open Kitty" { spawn "kitty"; }
     Super+Shift+T { spawn "ghostty"; }
     Super+D hotkey-overlay-title="Open Application Launcher" { spawn-sh "$HOME/.local/bin/wm-app-launcher"; }
-    Super+L allow-inhibiting=false hotkey-overlay-title="Lock Screen" { spawn "hyprlock"; }
+    Super+L allow-inhibiting=false hotkey-overlay-title="Lock Screen" { spawn-sh "$HOME/.local/bin/wm-lock-niri"; }
     Super+E { spawn "thunar"; }
     Super+W { spawn "zen-browser"; }
     Super+O { spawn "obsidian"; }

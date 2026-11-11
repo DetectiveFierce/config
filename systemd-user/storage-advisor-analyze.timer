@@ -1,0 +1,11 @@
+[Unit]
+Description=Run private storage advisor on chosen cadence
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+RandomizedDelaySec=1h
+Unit=storage-advisor-analyze.service
+
+[Install]
+WantedBy=timers.target

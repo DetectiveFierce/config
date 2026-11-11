@@ -7,32 +7,37 @@
     "panes": {
         "quadrants": [
             "Source",
-            "Console",
+            "TabSet1",
             "TabSet2",
-            "TabSet1"
+            "Console"
         ],
         "tabSet1": [
-            "Files",
-            "Connections",
-            "Build",
-            "Viewer",
             "Presentation"
         ],
         "tabSet2": [
             "Environment",
-            "Plots",
-            "Packages",
             "Help",
             "Presentations"
         ],
         "hiddenTabSet": [
             "History",
+            "Connections",
+            "Build",
             "VCS",
-            "Tutorial"
+            "Tutorial",
+            "Viewer",
+            "Chat"
         ],
         "console_left_on_top": false,
-        "console_right_on_top": true,
-        "additional_source_columns": 0
+        "console_right_on_top": false,
+        "additional_source_columns": 0,
+        "sidebar": [
+            "Files",
+            "Plots",
+            "Packages"
+        ],
+        "sidebar_visible": true,
+        "sidebar_location": "left"
     },
     "editor_scroll_multiplier": 170,
     "global_theme": "alternate",
@@ -45,5 +50,12 @@
     "default_project_location": "~/Landing Zone/Stat 221",
     "rmd_viewer_type": "none",
     "copilot_indexing_enabled": true,
-    "copilot_completions_delay": 50
+    "copilot_completions_delay": 50,
+    "assistant": "copilot",
+    "assistant_completions_delay": 240,
+    "code_completion_other": "manual",
+    "chat_provider": "none",
+    "assistant_completions_trigger": "manual",
+    "copilot_completions_trigger": "manual",
+    "assistant_nes_enabled": false
 }

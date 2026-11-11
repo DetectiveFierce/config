@@ -70,3 +70,18 @@ graph and detects conflicts between handwritten and DMS-generated bindings.
 Hyprland remains a secondary compatibility configuration. Shared commands live
 in `~/.local/bin`; compositor-neutral behavior must not be added under
 `hypr/scripts`.
+
+## Lock screen monitors
+
+`Super+L` runs `wm-lock-niri`. It starts hyprlock, dims all but the left-most
+enabled display through DDC/CI, and powers off the monitors. Keyboard or mouse
+input makes the left-most display visible while the others stay dimmed. Swayidle
+powers the displays off again after 10 seconds without input. Unlocking restores
+each display's previous brightness. The helper never disables an output, so it
+does not force niri to reassign windows or workspaces.
+
+Install `swayidle` (alongside `hyprlock` and `jq`) on each machine. Multiple
+displays also require `ddcutil` and monitors that support DDC/CI brightness.
+Niri 26.04 has no per-output DPMS command: the dark displays remain connected
+and may emit a faint backlight when niri wakes them. A display that disconnects
+itself from the computer during DPMS sleep can still change the layout.

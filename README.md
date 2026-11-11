@@ -22,6 +22,7 @@ config/
 ├── nvim/             personal Neovim configuration
 ├── zsh/              shell configuration
 ├── DankMaterialShell/
+├── toasts/           reproducible desktop toasts and LocalSend receiver
 ├── scripts/          validation and theme tooling
 └── .dotter/          deployment map and machine selection
 ```
@@ -162,3 +163,13 @@ commit adds or moves files. Review and commit changes normally; there is no
 automatic Git commit, pull, or push process.
 
 See `niri/README.md` and `niri/KEYMAP.md` for compositor structure and keys.
+
+## Desktop toasts and LocalSend
+
+The shared toast design, clockwise countdown border, hover pause, positioning,
+and keyboard-controlled LocalSend receiver are maintained in
+[toasts/readme.md](toasts/readme.md). Bootstrap installs a pinned upstream DMS
+UI with small patches and shared components; it does not depend on a manually
+edited shell snapshot. Use `dms-toasts doctor`, `test`, `apply`, `repair`, or
+`rollback` to maintain it. Generated builds and virtual environments stay out
+of the repository.

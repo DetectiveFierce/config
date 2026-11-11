@@ -1,0 +1,313 @@
+--- a/Modules/Notifications/Popup/NotificationPopup.qml
++++ b/Modules/Notifications/Popup/NotificationPopup.qml
+@@ -11,7 +11,7 @@
+ PanelWindow {
+     id: win
+ 
+-    readonly property bool connectedFrameMode: CompositorService.usesConnectedFrameChromeForScreen(win.screen)
++    readonly property bool connectedFrameMode: false
+     readonly property string notifBarSide: {
+         const pos = SettingsData.notificationPopupPosition;
+         if (pos === -1)
+@@ -30,6 +30,13 @@
+         default:
+             return "top";
+         }
++    }
++    readonly property bool isFileDrop: notificationData?.appName === "LocalSend" && (notificationData?.actions ?? []).some(a => a.identifier === "accept")
++    function decideDrop(key) {
++        if (!isFileDrop || exiting || _isDestroying) return;
++        const action = notificationData.actions.find(a => a.identifier === key);
++        if (action) action.invoke();
++        dismissPopupReliably();
+     }
+     readonly property int inlineExpandDuration: Theme.notificationInlineExpandDuration
+     readonly property int inlineCollapseDuration: Theme.notificationInlineCollapseDuration
+@@ -86,15 +93,7 @@
+     readonly property bool directionalEffect: Theme.isDirectionalEffect
+     readonly property bool depthEffect: Theme.isDepthEffect
+     readonly property real entryTravel: {
+-        const base = Math.abs(Theme.effectAnimOffset);
+-        if (directionalEffect) {
+-            if (isCenterPosition)
+-                return Math.max(base, Math.round(content.height * 1.1));
+-            return Math.max(base, Math.round(content.width * 0.95));
+-        }
+-        if (depthEffect)
+-            return Math.max(base, 44);
+-        return base;
++        return Math.max(160, content.height + 32);
+     }
+     readonly property real exitTravel: {
+         if (directionalEffect) {
+@@ -198,24 +197,14 @@
+     visible: !_finalized
+     WlrLayershell.layer: {
+         const shouldUseOverlay = CompositorService.framePeerSurfacesUseOverlayForScreen(win.screen) || (notificationData && (SettingsData.notificationOverlayEnabled || notificationData.urgency === NotificationUrgency.Critical));
+-        const fallback = shouldUseOverlay ? WlrLayer.Overlay : WlrLayer.Top;
++        const fallback = WlrLayer.Overlay;
+         return LayerShell.fromEnv("DMS_NOTIFICATION_LAYER", fallback);
+     }
+     WlrLayershell.exclusiveZone: -1
+-    WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
++    WlrLayershell.keyboardFocus: isFileDrop && !exiting ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
+     color: "transparent"
+-    readonly property real contentImplicitWidth: screen ? Math.min(400, Math.max(320, screen.width * 0.23)) : 380
+-    readonly property real contentImplicitHeight: {
+-        if (SettingsData.notificationPopupPrivacyMode && !descriptionExpanded)
+-            return basePopupHeightPrivacy;
+-        if (!descriptionExpanded)
+-            return basePopupHeight;
+-        const bodyTextHeight = expandedBodyMeasure.contentHeight || bodyText.contentHeight || 0;
+-        const collapsedBodyHeight = Theme.fontSizeSmall * 1.2 * (compactMode ? 1 : 2);
+-        if (bodyTextHeight > collapsedBodyHeight + 2)
+-            return basePopupHeight + bodyTextHeight - collapsedBodyHeight;
+-        return basePopupHeight;
+-    }
++    readonly property real contentImplicitWidth: Math.min(408, (screen?.width ?? 1920) - 24)
++    readonly property real contentImplicitHeight: toastDesign.implicitHeight + 8
+     readonly property real targetAlignedHeight: Theme.px(Math.max(0, contentImplicitHeight), dpr)
+     property real renderedAlignedHeight: heightSpring.value
+     property real allocatedAlignedHeight: targetAlignedHeight
+@@ -301,6 +290,7 @@
+         }
+     }
+     Component.onCompleted: {
++        if (isFileDrop) Qt.callLater(() => content.forceActiveFocus());
+         heightSpring.snapTo(targetAlignedHeight);
+         allocatedAlignedHeight = targetAlignedHeight;
+         _inlineGeometryReady = true;
+@@ -338,8 +328,8 @@
+         }
+     }
+ 
+-    property bool isTopCenter: SettingsData.notificationPopupPosition === -1
+-    property bool isBottomCenter: SettingsData.notificationPopupPosition === SettingsData.Position.BottomCenter
++    property bool isTopCenter: true
++    property bool isBottomCenter: false
+     property bool isCenterPosition: isTopCenter || isBottomCenter
+     readonly property real maxPopupShadowBlurPx: Math.max((Theme.elevationLevel3 && Theme.elevationLevel3.blurPx !== undefined) ? Theme.elevationLevel3.blurPx : 12, (Theme.elevationLevel4 && Theme.elevationLevel4.blurPx !== undefined) ? Theme.elevationLevel4.blurPx : 16)
+     readonly property real maxPopupShadowOffsetXPx: Math.max(Math.abs(Theme.elevationOffsetX(Theme.elevationLevel3)), Math.abs(Theme.elevationOffsetX(Theme.elevationLevel4)))
+@@ -473,33 +463,11 @@
+     }
+ 
+     function getContentX() {
+-        if (!screen)
+-            return 0;
+-
+-        const popupPos = SettingsData.notificationPopupPosition;
+-        const barLeft = getLeftMargin();
+-        const barRight = getRightMargin();
+-
+-        if (isCenterPosition)
+-            return Theme.snap((screen.width - alignedWidth) / 2, dpr);
+-        if (popupPos === SettingsData.Position.Left || popupPos === SettingsData.Position.Bottom)
+-            return Theme.snap(barLeft, dpr);
+-        return Theme.snap(screen.width - alignedWidth - barRight, dpr);
+-    }
+-
++        return Theme.snap(Math.max(8, Math.min((screen?.width ?? 1920) - alignedWidth - 8, BarWidgetService.toastCenter(screen) - alignedWidth / 2)), dpr);
++    }
+     function getAllocatedContentY() {
+-        if (!screen)
+-            return 0;
+-
+-        const popupPos = SettingsData.notificationPopupPosition;
+-        const barTop = getTopMargin();
+-        const barBottom = getBottomMargin();
+-        const isTop = isTopCenter || popupPos === SettingsData.Position.Top || popupPos === SettingsData.Position.Left;
+-        if (isTop)
+-            return Theme.snap(barTop, dpr);
+-        return Theme.snap(screen.height - allocatedAlignedHeight - barBottom, dpr);
+-    }
+-
++        return Theme.snap(6 + screenY, dpr);
++    }
+     function getContentY() {
+         return Theme.snap(getAllocatedContentY() + renderedContentOffsetY, dpr);
+     }
+@@ -607,6 +575,17 @@
+ 
+     Item {
+         id: content
++        focus: win.isFileDrop
++        Keys.onPressed: event => {
++            if (!win.isFileDrop || event.isAutoRepeat) return;
++            if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_Space) {
++                event.accepted = true;
++                win.decideDrop("accept");
++            } else if (event.key === Qt.Key_Escape) {
++                event.accepted = true;
++                win.decideDrop("reject");
++            }
++        }
+ 
+         x: Theme.snap(windowShadowPad, dpr)
+         y: Theme.snap(windowShadowPad + renderedContentOffsetY, dpr)
+@@ -615,7 +594,7 @@
+         visible: !win._finalized && !chromeOnlyExit
+         transformOrigin: Item.Center
+ 
+-        property real chromeScale: (!win.inlineHeightAnimating && cardHoverHandler.hovered) ? 1.01 : 1.0
++        property real chromeScale: !win.isFileDrop && (!win.inlineHeightAnimating && cardHoverHandler.hovered) ? 1.01 : 1.0
+ 
+         Behavior on chromeScale {
+             NumberAnimation {
+@@ -692,10 +671,10 @@
+             sourceY: content.shadowRenderPadding + content.cardInset
+             sourceWidth: Math.max(0, content.width - (content.cardInset * 2))
+             sourceHeight: Math.max(0, content.height - (content.cardInset * 2))
+-            targetRadius: win.connectedFrameMode ? Theme.connectedSurfaceRadius : Theme.cornerRadius
+-            targetColor: win.connectedFrameMode ? Theme.notificationFloatingSurface : Theme.readableSurface
+-            borderColor: win.notificationData && win.notificationData.urgency === NotificationUrgency.Critical ? Theme.withAlpha(Theme.primary, 0.3) : Theme.withAlpha(Theme.outline, 0.08)
+-            borderWidth: win.notificationData && win.notificationData.urgency === NotificationUrgency.Critical ? 2 : 0
++            targetRadius: 8
++            targetColor: "#172304"
++            borderColor: "transparent"
++            borderWidth: 0
+         }
+ 
+         // Keep critical accent outside shadow rendering so connected mode still shows it.
+@@ -705,7 +684,7 @@
+             width: Math.max(0, content.width - content.cardInset * 2)
+             height: Math.max(0, content.height - content.cardInset * 2)
+             radius: win.connectedFrameMode ? Theme.connectedSurfaceRadius : Theme.cornerRadius
+-            visible: win.notificationData && win.notificationData.urgency === NotificationUrgency.Critical
++            visible: false
+             opacity: 1
+             clip: true
+             scale: content.chromeScale
+@@ -736,8 +715,8 @@
+             anchors.margins: content.cardInset
+             radius: win.connectedFrameMode ? Theme.connectedSurfaceRadius : Theme.cornerRadius
+             color: "transparent"
+-            border.color: win.connectedFrameMode ? Theme.withAlpha(BlurService.borderColor, 0) : BlurService.borderColor
+-            border.width: win.connectedFrameMode ? 0 : BlurService.borderWidth
++            border.color: "transparent"
++            border.width: 0
+             z: 100
+             scale: content.chromeScale
+             transformOrigin: Item.Center
+@@ -758,12 +737,8 @@
+                 function onHoveredChanged() {
+                     if (!notificationData || win.exiting || win._isDestroying)
+                         return;
+-                    if (cardHoverHandler.hovered) {
+-                        if (notificationData.timer)
+-                            notificationData.timer.stop();
+-                    } else if (!win.contextMenuActive && notificationData.popup && notificationData.timer) {
+-                        notificationData.timer.restart();
+-                    }
++                    if (notificationData.timer)
++                        notificationData.timer.hold(win.notificationId + ":" + win.screen.name, cardHoverHandler.hovered);
+                 }
+             }
+ 
+@@ -776,7 +751,7 @@
+                 property real progress: 1
+                 readonly property real surfaceRadius: win.connectedFrameMode ? Theme.connectedSurfaceRadius : Theme.cornerRadius
+ 
+-                visible: active && progress > 0
++                visible: false
+                 anchors.left: parent.left
+                 anchors.leftMargin: surfaceRadius
+                 anchors.bottom: parent.bottom
+@@ -812,6 +787,25 @@
+                 }
+             }
+ 
++            ToastCard {
++                id: toastDesign
++                anchors.fill: parent
++                appName: win.notificationData?.appName ?? "System"
++                summary: win.notificationData?.summary ?? ""
++                detail: win.notificationData?.body ?? ""
++                fileDrop: win.isFileDrop
++                progress: win.notificationData?.timer?.progress ?? 1
++                actions: (win.notificationData?.actions ?? []).filter(a => a.identifier !== "default").map(a => ({key:a.identifier, label:win.isFileDrop ? (a.identifier === "accept" ? "Accept" : "Reject") : a.text, shortcut:win.isFileDrop ? (a.identifier === "accept" ? "enter" : "esc") : ""}))
++                onActionInvoked: key => {
++                    if (win.isFileDrop) win.decideDrop(key);
++                    else {
++                        const action = win.notificationData.actions.find(a => a.identifier === key);
++                        if (action) action.invoke();
++                        win.dismissPopupReliably();
++                    }
++                }
++            }
++
+             LayoutMirroring.enabled: I18n.isRtl
+             LayoutMirroring.childrenInherit: true
+ 
+@@ -831,6 +825,7 @@
+ 
+             Item {
+                 id: notificationContent
++                visible: false
+ 
+                 readonly property real expandedTextHeight: expandedBodyMeasure.contentHeight || bodyText.contentHeight || 0
+                 readonly property real collapsedBodyHeight: Theme.fontSizeSmall * 1.2 * (compactMode ? 1 : 2)
+@@ -933,7 +928,7 @@
+ 
+                         StyledText {
+                             id: headerTimeText
+-                            text: notificationData ? (notificationData.timeStr || "") : ""
++                            text: ""
+                             color: Theme.surfaceTextMedium
+                             font.pixelSize: Theme.fontSizeSmall
+                             font.weight: Font.Normal
+@@ -1009,6 +1004,7 @@
+ 
+             DankActionButton {
+                 id: closeButton
++                visible: false
+ 
+                 anchors.right: parent.right
+                 anchors.top: parent.top
+@@ -1035,7 +1031,7 @@
+                 iconSize: compactMode ? 14 : 16
+                 buttonSize: compactMode ? 20 : 24
+                 z: 15
+-                visible: win.hasExpandableBody && (SettingsData.notificationPopupPrivacyMode || win.bodyClickInvokesAction || bodyText.hasMoreText || win.descriptionExpanded)
++                visible: false && win.hasExpandableBody && (SettingsData.notificationPopupPrivacyMode || win.bodyClickInvokesAction || bodyText.hasMoreText || win.descriptionExpanded)
+ 
+                 onClicked: {
+                     if (win.hasExpandableBody)
+@@ -1044,7 +1040,7 @@
+             }
+ 
+             Row {
+-                visible: cardHoverHandler.hovered
++                visible: false
+                 opacity: visible ? 1 : 0
+                 anchors.right: clearButton.visible ? clearButton.left : parent.right
+                 anchors.rightMargin: clearButton.visible ? contentSpacing : Theme.spacingL
+@@ -1105,7 +1101,7 @@
+                 property bool isHovered: false
+                 readonly property int actionCount: notificationData ? (notificationData.actions || []).length : 0
+ 
+-                visible: actionCount < 3 && cardHoverHandler.hovered
++                visible: false
+                 opacity: visible ? 1 : 0
+                 Behavior on opacity {
+                     NumberAnimation {
+@@ -1149,6 +1145,7 @@
+ 
+             MouseArea {
+                 id: cardHoverArea
++                enabled: !win.isFileDrop
+ 
+                 anchors.fill: parent
+                 hoverEnabled: true
+@@ -1400,11 +1397,7 @@
+         function onVisibleChanged() {
+             if (!notificationData?.timer || exiting || _isDestroying)
+                 return;
+-            if (win.contextMenuActive) {
+-                notificationData.timer.stop();
+-            } else if (!cardHoverHandler.hovered && notificationData.popup) {
+-                notificationData.timer.restart();
+-            }
++            notificationData.timer.hold("menu:" + win.notificationId + ":" + win.screen.name, win.contextMenuActive);
+         }
+     }
+ 

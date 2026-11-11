@@ -12,12 +12,14 @@
 		"windowBounds": {
 			"x": 40,
 			"y": 34,
-			"width": 631,
-			"height": 748,
+			"width": 1912,
+			"height": 1032,
 			"maximized": false
 		},
 		"accessibility": false,
-		"disableRendererAccessibility": false
+		"disableRendererAccessibility": false,
+		"enableSplashScreen": true,
+		"showWhatsNew": true
 	},
 	"remote_session": {
 		"lastRemoteSessionUrl": "",
@@ -79,5 +81,11 @@
 	"zotero_use_better_bibtex": false,
 	"zotero_api_key": "",
 	"zotero_data_dir": "",
-	"quarto_website_sync_editor": false
+	"quarto_website_sync_editor": false,
+	"fixed_plot_size": {
+		"enabled": false,
+		"width": 7,
+		"height": 5,
+		"units": "in"
+	}
 }

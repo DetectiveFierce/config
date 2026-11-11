@@ -1,0 +1,17 @@
+[Unit]
+Description=Privileged private storage activity events
+After=systemd-user-sessions.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /usr/local/libexec/storage-advisor/root_collector.py
+Environment=STORAGE_ADVISOR_UID=1000 STORAGE_ADVISOR_HOME=/home/shared-psychosis
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=read-only
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target

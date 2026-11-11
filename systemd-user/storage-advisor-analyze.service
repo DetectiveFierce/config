@@ -1,0 +1,9 @@
+[Unit]
+Description=Private storage advisor incremental analysis
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/storage-advisor analyze --scheduled
+Nice=15
+IOSchedulingClass=idle
+NoNewPrivileges=yes

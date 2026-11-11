@@ -1,0 +1,55 @@
+--- a/Services/ToastService.qml
++++ b/Services/ToastService.qml
+@@ -9,6 +9,8 @@
+ Singleton {
+     id: root
+ 
++    readonly property real countdownProgress: toastTimer.progress
++    function holdToast(key, active) { toastTimer.hold(key, active); }
+     readonly property int levelInfo: 0
+     readonly property int levelWarn: 1
+     readonly property int levelError: 2
+@@ -143,12 +145,13 @@
+ 
+         if (isStickyCategory(toast.category)) {
+             toastTimer.stop();
++            toastTimer.interval = 0;
+         } else if (toast.level === levelError && hasDetails) {
+             toastTimer.interval = 8000;
+-            toastTimer.start();
++            toastTimer.restart();
+         } else {
+             toastTimer.interval = toast.level === levelError ? 5000 : toast.level === levelWarn ? 3000 : 1500;
+-            toastTimer.start();
++            toastTimer.restart();
+         }
+     }
+ 
+@@ -159,25 +162,17 @@
+     }
+ 
+     function restartTimer() {
+-        if (isStickyCategory(currentCategory)) {
+-            return;
+-        }
+-        if (hasDetails && currentLevel === levelError) {
+-            toastTimer.interval = 8000;
+-            toastTimer.restart();
+-        }
++        if (!isStickyCategory(currentCategory)) toastTimer.start();
+     }
+ 
+     function clearWallpaperError() {
+         wallpaperErrorStatus = "";
+     }
+ 
+-    Timer {
++    CountdownClock {
+         id: toastTimer
+ 
+         interval: 5000
+-        running: false
+-        repeat: false
+         onTriggered: hideToast()
+     }
+ 
