@@ -46,8 +46,7 @@ For matching this desktop monitor topology in Niri, see `niri/README.md`.
 
 - `hypr/hypr-cwd-launch` is kept as a shim to `~/.local/bin/wm-cwd-launch`.
 
-## Waybar durability
+## Desktop shell
 
-- `hypr/scripts/waybar-supervisor.sh` keeps Waybar running and relaunches it 1 second after a crash.
-- Hyprland autostart uses the supervisor instead of launching `waybar` directly.
-- To stop both the bar and the supervisor intentionally, run `pkill -f waybar-supervisor.sh`.
+- Hyprland starts DankMaterialShell through `dms.service`, the same user unit niri uses.
+- Restart the shell with `systemctl --user restart dms.service`.
