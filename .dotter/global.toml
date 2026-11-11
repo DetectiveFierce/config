@@ -29,7 +29,6 @@ rstudio = "~/.config/rstudio"
 # These applications keep documentation or local-only files beside their
 # configuration, so list only the deployable parts instead of linking the
 # entire repository directory.
-"Antigravity/User" = "~/.config/Antigravity/User"
 "Cursor/User" = "~/.config/Cursor/User"
 "DankMaterialShell/firefox.css" = "~/.config/DankMaterialShell/firefox.css"
 "DankMaterialShell/plugin_settings.json" = "~/.config/DankMaterialShell/plugin_settings.json"
