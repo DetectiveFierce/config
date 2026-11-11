@@ -216,11 +216,37 @@ alias create-tex="$HOME/Landing Zone/Latex Projects/create-tex.sh"
 # Ghostty-inspired fzf colors
 export FZF_DEFAULT_OPTS='--color=fg:#99cc58,bg:#22350a,hl:#66d9ef,fg+:#e8ffb9,bg+:#2a4010,hl+:#a6e22e,info:#4d6626,prompt:#f92672,pointer:#a6e22e,marker:#ae81ff,spinner:#66d9ef,header:#fd971f'
 
-if command -v neofetch >/dev/null 2>&1; then
-  neofetch
-elif command -v fastfetch >/dev/null 2>&1; then
-  fastfetch
-fi
+# Keep the startup fetch readable at every terminal width.
+_responsive_fetch() {
+  local cols=${COLUMNS:-0}
+  (( cols > 0 )) || cols=$(tput cols 2>/dev/null)
+  (( cols > 0 )) || cols=80
+
+  if command -v fastfetch >/dev/null 2>&1; then
+    if (( cols >= 125 )); then
+      command fastfetch
+    elif (( cols >= 80 )); then
+      command fastfetch --logo-position top --logo-padding-right 0
+    elif (( cols >= 48 )); then
+      command fastfetch --logo-position top --logo-padding-right 0 \
+        --structure Title:OS:Kernel:Shell:WM:Terminal:Memory:Disk:Battery
+    elif (( cols >= 35 )); then
+      command fastfetch --logo none \
+        --structure Title:OS:Kernel:Shell:WM:Terminal:Memory
+    else
+      command fastfetch --logo none \
+        --structure Title:OS:Shell:WM:Terminal
+    fi
+  elif command -v neofetch >/dev/null 2>&1; then
+    if (( cols >= 100 )); then
+      command neofetch
+    else
+      command neofetch --ascii_distro off
+    fi
+  fi
+}
+_responsive_fetch
+unfunction _responsive_fetch
 
 # >>> juliaup initialize >>>
 
