@@ -13,7 +13,7 @@
   "workbench.editor.tabSizing": "shrink",
   "workbench.editor.showTabs": "none",
   "monkeyPatch.folderMap": {
-    "cursor-monkey": "/home/shared-psychosis/.cursor-monkey"
+    "cursor-monkey": "~/.cursor-monkey"
   },
   "monkeyPatch.browserModules": ["cursor-monkey/browser1"],
   "workbench.colorTheme": "Hate of Nature DEV",

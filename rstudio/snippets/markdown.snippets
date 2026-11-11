@@ -28,7 +28,7 @@ snippet header
 	output: 
 		pdf_document:
 			includes:
-				in_header: "/home/shared-psychosis/Landing Zone/header.tex"
+				in_header: "~/Landing Zone/header.tex"
 	header-includes:
 		-  - \renewcommand{\mytitle}{TITLE title Title TiTlE tItLe TItLE tiTlE}
 	---
@@ -38,7 +38,7 @@ snippet header
 
 	```{r setup, include=FALSE}
 	knitr::opts_chunk\$set(echo = TRUE, dev="cairo_pdf")
-	setwd("/home/shared-psychosis/Landing Zone/")
+	setwd("~/Landing Zone/")
 	```
 
 	Imports
@@ -57,7 +57,7 @@ snippet homework
 	output: 
 		pdf_document:
 			includes:
-				in_header: "/home/shared-psychosis/Landing Zone/header.tex"
+				in_header: "~/Landing Zone/header.tex"
 	header-includes:
 		-  - \renewcommand{\mytitle}{TITLE title Title TiTlE tItLe TItLE tiTlE}
 	---
@@ -67,7 +67,7 @@ snippet homework
 
 	```{r setup, include=FALSE}
 	knitr::opts_chunk\$set(echo = TRUE, dev="cairo_pdf")
-	setwd("/home/shared-psychosis/Landing Zone/")
+	setwd("~/Landing Zone/")
 	```
 
 	Imports

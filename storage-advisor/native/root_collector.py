@@ -5,6 +5,7 @@ from __future__ import annotations
 import ctypes
 import json
 import os
+import pwd
 import select
 import socket
 import stat
@@ -16,7 +17,7 @@ from pathlib import Path
 
 
 UID = int(os.environ.get("STORAGE_ADVISOR_UID", "1000"))
-HOME = Path(os.environ.get("STORAGE_ADVISOR_HOME", "/home/shared-psychosis"))
+HOME = Path(os.environ.get("STORAGE_ADVISOR_HOME") or pwd.getpwuid(UID).pw_dir)
 RUNTIME = Path(f"/run/user/{UID}/storage-advisor")
 WATCHLIST = RUNTIME / "watchlist"
 SOCKET = RUNTIME / "events.sock"

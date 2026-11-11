@@ -94,7 +94,7 @@ def prepare_tree(base, output, root=ROOT):
     checked = [output/e['path'] for e in data['patches']+data.get('replacements', [])]
     checked += [output/p.relative_to(root/'overlays') for p in (root/'overlays').rglob('*') if p.is_file()]
     for target in checked:
-        if b'/home/shared-psychosis/' in target.read_bytes():
+        if re.search(rb'/home/[^/\s]+/', target.read_bytes()):
             raise RuntimeError(f'Host-specific path in runtime source: {target}')
     return {str(path.relative_to(output)): sha(path) for path in checked}
 

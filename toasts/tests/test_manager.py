@@ -119,7 +119,7 @@ class BuildTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError,'Corrupt cached archive'):
                 m.archive_for(self.root,cache)
     def test_host_specific_overlay_is_refused(self):
-        (self.root/'overlays/Custom.qml').write_text('// /home/shared-psychosis/private-path\n')
+        (self.root/'overlays/Custom.qml').write_text('// /home/someone/private-path\n')
         with self.assertRaisesRegex(RuntimeError,'Host-specific path'):
             m.prepare_tree(self.base,self.directory/'result',self.root)
 
